@@ -35,13 +35,13 @@ import org.ta4j.core.num.Num;
 public class InPipeRule extends AbstractRule {
 
     /** The upper indicator */
-    private Indicator<Num> upper;
+    private final Indicator<Num> upper;
 
     /** The lower indicator */
-    private Indicator<Num> lower;
+    private final Indicator<Num> lower;
 
     /** The evaluated indicator */
-    private Indicator<Num> ref;
+    private final Indicator<Num> ref;
 
     /**
      * Constructor.
@@ -82,8 +82,9 @@ public class InPipeRule extends AbstractRule {
     /** This rule does not use the {@code tradingRecord}. */
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
-        final boolean satisfied = ref.getValue(index).isLessThanOrEqual(upper.getValue(index))
-                && ref.getValue(index).isGreaterThanOrEqual(lower.getValue(index));
+        Num refValue = ref.getValue(index);
+        final boolean satisfied = refValue.isLessThanOrEqual(upper.getValue(index))
+                && refValue.isGreaterThanOrEqual(lower.getValue(index));
         traceIsSatisfied(index, satisfied);
         return satisfied;
     }

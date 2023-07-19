@@ -39,7 +39,7 @@ import org.ta4j.core.indicators.RSIIndicator;
 import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.WilliamsRIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
-import org.ta4j.core.indicators.helpers.PriceVariationIndicator;
+import org.ta4j.core.indicators.helpers.ClosePriceRatioIndicator;
 import org.ta4j.core.indicators.helpers.TypicalPriceIndicator;
 import org.ta4j.core.indicators.statistics.StandardDeviationIndicator;
 
@@ -53,6 +53,7 @@ public class IndicatorsToCsv
 
 	public static void main(String[] args)
 	{
+
 		/*
 		 * Getting bar series
 		 */
@@ -66,7 +67,7 @@ public class IndicatorsToCsv
 		// Typical price
 		TypicalPriceIndicator typicalPrice = new TypicalPriceIndicator( series );
 		// Price variation
-		PriceVariationIndicator priceVariation = new PriceVariationIndicator( series );
+		ClosePriceRatioIndicator closePriceRatioIndicator = new ClosePriceRatioIndicator( series );
 		// Simple moving averages
 		SMAIndicator shortSma = new SMAIndicator( closePrice, 8 );
 		SMAIndicator longSma = new SMAIndicator( closePrice, 20 );
@@ -99,8 +100,8 @@ public class IndicatorsToCsv
 		for ( int i = 0; i < nbBars; i++ )
 		{
 			sb.append( series.getBar( i ).getEndTime() ).append( ',' ).append( closePrice.getValue( i ) ).append( ',' )
-					.append( typicalPrice.getValue( i ) ).append( ',' ).append( priceVariation.getValue( i ) ).append( ',' )
-					.append( shortSma.getValue( i ) ).append( ',' ).append( longSma.getValue( i ) ).append( ',' )
+					.append( typicalPrice.getValue( i ) ).append( ',' ).append( closePriceRatioIndicator.getValue( i ) )
+					.append( ',' ).append( shortSma.getValue( i ) ).append( ',' ).append( longSma.getValue( i ) ).append( ',' )
 					.append( shortEma.getValue( i ) ).append( ',' ).append( longEma.getValue( i ) ).append( ',' )
 					.append( ppo.getValue( i ) ).append( ',' ).append( roc.getValue( i ) ).append( ',' )
 					.append( rsi.getValue( i ) ).append( ',' ).append( williamsR.getValue( i ) ).append( ',' )

@@ -29,57 +29,47 @@ import org.ta4j.core.num.Num;
 /**
  * WMA indicator.
  */
-public class WMAIndicator extends CachedIndicator<Num>
-{
-	private final int barCount;
+public class WMAIndicator extends CachedIndicator<Num> {
 
-	private final Indicator<Num> indicator;
+    private final int barCount;
+    private final Indicator<Num> indicator;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param indicator the {@link Indicator}
-	 * @param barCount  the time frame
-	 */
-	public WMAIndicator(Indicator<Num> indicator, int barCount)
-	{
-		super( indicator );
-		this.indicator = indicator;
-		this.barCount = barCount;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param indicator the {@link Indicator}
+     * @param barCount  the time frame
+     */
+    public WMAIndicator(Indicator<Num> indicator, int barCount) {
+        super(indicator);
+        this.indicator = indicator;
+        this.barCount = barCount;
+    }
 
+    @Override
+    protected Num calculate(int index) {
+        if (index == 0) {
+            return indicator.getValue(0);
+        }
 
-	@Override
-	protected Num calculate(int index)
-	{
-		if (index == 0)
-		{
-			return indicator.getValue( 0 );
-		}
+        Num value = zero();
+        int loopLength = (index - barCount < 0) ? index + 1 : barCount;
+        int actualIndex = index;
+        for (int i = loopLength; i > 0; i--) {
+            value = value.plus(numOf(i).multipliedBy(indicator.getValue(actualIndex)));
+            actualIndex--;
+        }
 
-		Num value = numOf( 0 );
-		int loopLength = (index - barCount < 0) ? index + 1 : barCount;
-		int actualIndex = index;
-		for ( int i = loopLength; i > 0; i-- )
-		{
-			value = value.plus( numOf( i ).multipliedBy( indicator.getValue( actualIndex ) ) );
-			actualIndex--;
-		}
+        return value.dividedBy(numOf((loopLength * (loopLength + 1)) / 2));
+    }
 
-		return value.dividedBy( numOf( (loopLength * (loopLength + 1)) / 2 ) );
-	}
+    @Override
+    public int getUnstableBars() {
+        return barCount;
+    }
 
-
-	@Override
-	public int getUnstableBars()
-	{
-		return barCount;
-	}
-
-
-	@Override
-	public String toString()
-	{
-		return getClass().getSimpleName() + " barCount: " + barCount;
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " barCount: " + barCount;
+    }
 }

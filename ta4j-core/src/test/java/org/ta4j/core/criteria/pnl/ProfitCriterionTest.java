@@ -34,6 +34,8 @@ import org.ta4j.core.AnalysisCriterion;
 import org.ta4j.core.BaseTradingRecord;
 import org.ta4j.core.Trade;
 import org.ta4j.core.TradingRecord;
+import org.ta4j.core.analysis.cost.FixedTransactionCostModel;
+import org.ta4j.core.analysis.cost.ZeroCostModel;
 import org.ta4j.core.criteria.AbstractCriterionTest;
 import org.ta4j.core.mocks.MockBarSeries;
 import org.ta4j.core.num.Num;
@@ -41,7 +43,38 @@ import org.ta4j.core.num.Num;
 public class ProfitCriterionTest extends AbstractCriterionTest {
 
     public ProfitCriterionTest(Function<Number, Num> numFunction) {
-        super((params) -> new ProfitCriterion((boolean) params[0]), numFunction);
+        super(params -> new ProfitCriterion((boolean) params[0]), numFunction);
+    }
+
+    @Test
+    public void calculateComparingIncludingVsExcludingCosts() {
+        MockBarSeries series = new MockBarSeries(numFunction, 100, 105, 100, 80, 85, 120);
+        FixedTransactionCostModel transactionCost = new FixedTransactionCostModel(1);
+        ZeroCostModel holdingCost = new ZeroCostModel();
+        TradingRecord tradingRecord = new BaseTradingRecord(Trade.TradeType.BUY, transactionCost, holdingCost);
+
+        // entry price = 100 (cost = 1) => netPrice = 101, grossPrice = 100
+        tradingRecord.enter(0, series.getBar(0).getClosePrice(), numOf(1));
+        // exit price = 105 (cost = 1) => netPrice = 104, grossPrice = 105
+        tradingRecord.exit(1, series.getBar(1).getClosePrice(),
+                tradingRecord.getCurrentPosition().getEntry().getAmount());
+
+        // entry price = 100 (cost = 1) => netPrice = 101, grossPrice = 100
+        tradingRecord.enter(2, series.getBar(2).getClosePrice(), numOf(1));
+        // exit price = 120 (cost = 1) => netPrice = 119, grossPrice = 120
+        tradingRecord.exit(5, series.getBar(5).getClosePrice(),
+                tradingRecord.getCurrentPosition().getEntry().getAmount());
+
+        // include costs, i.e. profit - costs:
+        // [(104 - 101)] + [(119 - 101)] = 3 + 18 = +21 profit
+        // [(105 - 100)] + [(120 - 100)] = 5 + 20 = +25 profit - 4 = +21 profit
+        AnalysisCriterion profitIncludingCosts = getCriterion(false);
+        assertNumEquals(21, profitIncludingCosts.calculate(series, tradingRecord));
+
+        // exclude costs, i.e. costs are not contained:
+        // [(105 - 100)] + [(120 - 100)] = 5 + 20 = +25 profit
+        AnalysisCriterion profitExcludingCosts = getCriterion(true);
+        assertNumEquals(25, profitExcludingCosts.calculate(series, tradingRecord));
     }
 
     @Test
