@@ -52,60 +52,70 @@ import org.ta4j.core.num.Num;
  *            <code>Num</code>, <code>Boolean</code>, ...)
  */
 @RunWith(Parameterized.class)
-public abstract class AbstractIndicatorTest<D, I> {
+public abstract class AbstractIndicatorTest<D, I>
+{
+	public final Function<Number, Num> numFunction;
 
-    public final Function<Number, Num> numFunction;
+	@Parameterized.Parameters(name = "Test Case: {index} (0=DoubleNum, 1=DecimalNum)")
+	public static List<Function<Number, Num>> function()
+	{
+		return Arrays.asList( DoubleNum::valueOf, DecimalNum::valueOf );
+	}
 
-    @Parameterized.Parameters(name = "Test Case: {index} (0=DoubleNum, 1=DecimalNum)")
-    public static List<Function<Number, Num>> function() {
-        return Arrays.asList(DoubleNum::valueOf, DecimalNum::valueOf);
-    }
+	private final IndicatorFactory<D, I> factory;
 
-    private final IndicatorFactory<D, I> factory;
+	/**
+	 * Constructor.
+	 * 
+	 * @param factory     IndicatorFactory for building an Indicator given data and
+	 *                    parameters.
+	 * @param numFunction the function to convert a Number into a Num implementation
+	 *                    (automatically inserted by Junit)
+	 */
+	public AbstractIndicatorTest(IndicatorFactory<D, I> factory, Function<Number, Num> numFunction)
+	{
+		this.numFunction = numFunction;
+		this.factory = factory;
+	}
 
-    /**
-     * Constructor.
-     * 
-     * @param factory     IndicatorFactory for building an Indicator given data and
-     *                    parameters.
-     * @param numFunction the function to convert a Number into a Num implementation
-     *                    (automatically inserted by Junit)
-     */
-    public AbstractIndicatorTest(IndicatorFactory<D, I> factory, Function<Number, Num> numFunction) {
-        this.numFunction = numFunction;
-        this.factory = factory;
-    }
 
-    /**
-     * Constructor
-     *
-     * @param numFunction the function to convert a Number into a Num implementation
-     *                    (automatically inserted by Junit)
-     */
-    public AbstractIndicatorTest(Function<Number, Num> numFunction) {
-        this.numFunction = numFunction;
-        this.factory = null;
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param numFunction the function to convert a Number into a Num implementation
+	 *                    (automatically inserted by Junit)
+	 */
+	public AbstractIndicatorTest(Function<Number, Num> numFunction)
+	{
+		this.numFunction = numFunction;
+		this.factory = null;
+	}
 
-    /**
-     * Generates an Indicator from data and parameters.
-     * 
-     * @param data   indicator data
-     * @param params indicator parameters
-     * @return Indicator<I> from data given parameters
-     */
-    public Indicator<I> getIndicator(D data, Object... params) {
-        assert factory != null;
-        return factory.getIndicator(data, params);
-    }
 
-    protected Num numOf(Number n) {
-        return numFunction.apply(n);
-    }
+	/**
+	 * Generates an Indicator from data and parameters.
+	 * 
+	 * @param data   indicator data
+	 * @param params indicator parameters
+	 * @return Indicator<I> from data given parameters
+	 */
+	public Indicator<I> getIndicator(D data, Object... params)
+	{
+		assert factory != null;
+		return factory.getIndicator( data, params );
+	}
 
-    public Num numOf(String string, int precision) {
-        MathContext mathContext = new MathContext(precision, RoundingMode.HALF_UP);
-        return this.numOf(new BigDecimal(string, mathContext));
-    }
+
+	protected Num numOf(Number n)
+	{
+		return numFunction.apply( n );
+	}
+
+
+	public Num numOf(String string, int precision)
+	{
+		MathContext mathContext = new MathContext( precision, RoundingMode.HALF_UP );
+		return this.numOf( new BigDecimal( string, mathContext ) );
+	}
 
 }

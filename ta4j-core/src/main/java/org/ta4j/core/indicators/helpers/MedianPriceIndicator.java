@@ -38,25 +38,31 @@ import org.ta4j.core.num.Num;
  * MedianPrice = (highPrice + lowPrice) / 2
  * </pre>
  */
-public class MedianPriceIndicator extends CachedIndicator<Num> {
+public class MedianPriceIndicator extends CachedIndicator<Num>
+{
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public MedianPriceIndicator(BarSeries series) {
-        super(series);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public MedianPriceIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        final Bar bar = getBarSeries().getBar(index);
-        return bar.getHighPrice().plus(bar.getLowPrice()).dividedBy(numOf(2));
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		final Bar bar = getBarSeries().getBar( index );
+		return bar.getHighPrice().plus( bar.getLowPrice() ).dividedBy( numOf( 2 ) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

@@ -34,48 +34,62 @@ import org.ta4j.core.num.Num;
  *      "http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:aroon_oscillator">
  *      http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:aroon_oscillator</a>
  */
-public class AroonOscillatorIndicator extends CachedIndicator<Num> {
+public class AroonOscillatorIndicator extends CachedIndicator<Num>
+{
 
-    private final int barCount;
-    private final AroonUpIndicator aroonUpIndicator;
-    private final AroonDownIndicator aroonDownIndicator;
+	private final int barCount;
 
-    /**
-     * Constructor.
-     * 
-     * @param series   the bar series
-     * @param barCount the number of periods used for the indicators
-     */
-    public AroonOscillatorIndicator(BarSeries series, int barCount) {
-        super(series);
-        this.barCount = barCount;
-        this.aroonUpIndicator = new AroonUpIndicator(series, barCount);
-        this.aroonDownIndicator = new AroonDownIndicator(series, barCount);
-    }
+	private final AroonUpIndicator aroonUpIndicator;
 
-    @Override
-    protected Num calculate(int index) {
-        return aroonUpIndicator.getValue(index).minus(aroonDownIndicator.getValue(index));
-    }
+	private final AroonDownIndicator aroonDownIndicator;
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series   the bar series
+	 * @param barCount the number of periods used for the indicators
+	 */
+	public AroonOscillatorIndicator(BarSeries series, int barCount)
+	{
+		super( series );
+		this.barCount = barCount;
+		this.aroonUpIndicator = new AroonUpIndicator( series, barCount );
+		this.aroonDownIndicator = new AroonDownIndicator( series, barCount );
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
 
-    /** @return the {@link #aroonUpIndicator} */
-    public AroonUpIndicator getAroonUpIndicator() {
-        return aroonUpIndicator;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		return aroonUpIndicator.getValue( index ).minus( aroonDownIndicator.getValue( index ) );
+	}
 
-    /** @return the {@link #aroonDownIndicator} */
-    public AroonDownIndicator getAroonDownIndicator() {
-        return aroonDownIndicator;
-    }
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
+
+
+	/** @return the {@link #aroonUpIndicator} */
+	public AroonUpIndicator getAroonUpIndicator()
+	{
+		return aroonUpIndicator;
+	}
+
+
+	/** @return the {@link #aroonDownIndicator} */
+	public AroonDownIndicator getAroonDownIndicator()
+	{
+		return aroonDownIndicator;
+	}
 
 }

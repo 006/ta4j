@@ -30,49 +30,61 @@ import org.ta4j.core.num.Num;
 /**
  * Returns the previous (n-th) value of an indicator.
  */
-public class PreviousValueIndicator extends CachedIndicator<Num> {
+public class PreviousValueIndicator extends CachedIndicator<Num>
+{
 
-    private final int n;
-    private final Indicator<Num> indicator;
+	private final int n;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator from which to calculate the previous value
-     */
-    public PreviousValueIndicator(Indicator<Num> indicator) {
-        this(indicator, 1);
-    }
+	private final Indicator<Num> indicator;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator from which to calculate the previous value
-     * @param n         parameter defines the previous n-th value
-     */
-    public PreviousValueIndicator(Indicator<Num> indicator, int n) {
-        super(indicator);
-        if (n < 1) {
-            throw new IllegalArgumentException("n must be positive number, but was: " + n);
-        }
-        this.n = n;
-        this.indicator = indicator;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator from which to calculate the previous value
+	 */
+	public PreviousValueIndicator(Indicator<Num> indicator)
+	{
+		this( indicator, 1 );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        int previousValue = Math.max(0, (index - n));
-        return this.indicator.getValue(previousValue);
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator from which to calculate the previous value
+	 * @param n         parameter defines the previous n-th value
+	 */
+	public PreviousValueIndicator(Indicator<Num> indicator, int n)
+	{
+		super( indicator );
+		if (n < 1)
+		{
+			throw new IllegalArgumentException( "n must be positive number, but was: " + n );
+		}
+		this.n = n;
+		this.indicator = indicator;
+	}
 
-    @Override
-    public String toString() {
-        final String nInfo = n == 1 ? "" : "(" + n + ")";
-        return getClass().getSimpleName() + nInfo + "[" + this.indicator + "]";
-    }
+
+	@Override
+	protected Num calculate(int index)
+	{
+		int previousValue = Math.max( 0, (index - n) );
+		return this.indicator.getValue( previousValue );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		final String nInfo = n == 1 ? "" : "(" + n + ")";
+		return getClass().getSimpleName() + nInfo + "[" + this.indicator + "]";
+	}
 }

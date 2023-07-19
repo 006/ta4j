@@ -29,183 +29,224 @@ import org.slf4j.LoggerFactory;
 /**
  * Base implementation of a {@link Strategy}.
  */
-public class BaseStrategy implements Strategy {
+public class BaseStrategy implements Strategy
+{
+	/** The logger */
+	protected final transient Logger log = LoggerFactory.getLogger( getClass() );
 
-    /** The logger */
-    protected final transient Logger log = LoggerFactory.getLogger(getClass());
+	/** The class name */
+	private final String className = getClass().getSimpleName();
 
-    /** The class name */
-    private final String className = getClass().getSimpleName();
+	/** Name of the strategy */
+	private final String name;
 
-    /** Name of the strategy */
-    private final String name;
+	/** The entry rule */
+	private final Rule entryRule;
 
-    /** The entry rule */
-    private final Rule entryRule;
+	/** The exit rule */
+	private final Rule exitRule;
 
-    /** The exit rule */
-    private final Rule exitRule;
+	/**
+	 * The number of first bars in a bar series that this strategy ignores.<br>
+	 * During the unstable bars of the strategy any trade placement will be
+	 * cancelled.<br>
+	 * I.e. no entry/exit signal will be fired before index == unstableBars.
+	 */
+	private int unstableBars;
 
-    /**
-     * The number of first bars in a bar series that this strategy ignores.<br>
-     * During the unstable bars of the strategy any trade placement will be
-     * cancelled.<br>
-     * I.e. no entry/exit signal will be fired before index == unstableBars.
-     */
-    private int unstableBars;
+	/**
+	 * Constructor.
+	 *
+	 * @param entryRule the entry rule
+	 * @param exitRule  the exit rule
+	 */
+	public BaseStrategy(Rule entryRule, Rule exitRule)
+	{
+		this( null, entryRule, exitRule, 0 );
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param entryRule the entry rule
-     * @param exitRule  the exit rule
-     */
-    public BaseStrategy(Rule entryRule, Rule exitRule) {
-        this(null, entryRule, exitRule, 0);
-    }
 
-    /**
-     * Constructor.
-     *
-     * @param entryRule    the entry rule
-     * @param exitRule     the exit rule
-     * @param unstableBars strategy will ignore possible signals at
-     *                     <code>index</code> < <code>unstableBars</code>
-     */
-    public BaseStrategy(Rule entryRule, Rule exitRule, int unstableBars) {
-        this(null, entryRule, exitRule, unstableBars);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param entryRule    the entry rule
+	 * @param exitRule     the exit rule
+	 * @param unstableBars strategy will ignore possible signals at
+	 *                     <code>index</code> < <code>unstableBars</code>
+	 */
+	public BaseStrategy(Rule entryRule, Rule exitRule, int unstableBars)
+	{
+		this( null, entryRule, exitRule, unstableBars );
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param name      the name of the strategy
-     * @param entryRule the entry rule
-     * @param exitRule  the exit rule
-     */
-    public BaseStrategy(String name, Rule entryRule, Rule exitRule) {
-        this(name, entryRule, exitRule, 0);
-    }
 
-    /**
-     * Constructor.
-     *
-     * @param name         the name of the strategy
-     * @param entryRule    the entry rule
-     * @param exitRule     the exit rule
-     * @param unstableBars strategy will ignore possible signals at
-     *                     <code>index</code> < <code>unstableBars</code>
-     * @throws IllegalArgumentException if entryRule or exitRule is null
-     */
-    public BaseStrategy(String name, Rule entryRule, Rule exitRule, int unstableBars) {
-        if (entryRule == null || exitRule == null) {
-            throw new IllegalArgumentException("Rules cannot be null");
-        }
-        if (unstableBars < 0) {
-            throw new IllegalArgumentException("Unstable bars must be >= 0");
-        }
-        this.name = name;
-        this.entryRule = entryRule;
-        this.exitRule = exitRule;
-        this.unstableBars = unstableBars;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param name      the name of the strategy
+	 * @param entryRule the entry rule
+	 * @param exitRule  the exit rule
+	 */
+	public BaseStrategy(String name, Rule entryRule, Rule exitRule)
+	{
+		this( name, entryRule, exitRule, 0 );
+	}
 
-    @Override
-    public String getName() {
-        return name;
-    }
 
-    @Override
-    public Rule getEntryRule() {
-        return entryRule;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param name         the name of the strategy
+	 * @param entryRule    the entry rule
+	 * @param exitRule     the exit rule
+	 * @param unstableBars strategy will ignore possible signals at
+	 *                     <code>index</code> < <code>unstableBars</code>
+	 * @throws IllegalArgumentException if entryRule or exitRule is null
+	 */
+	public BaseStrategy(String name, Rule entryRule, Rule exitRule, int unstableBars)
+	{
+		if (entryRule == null || exitRule == null)
+		{
+			throw new IllegalArgumentException( "Rules cannot be null" );
+		}
+		if (unstableBars < 0)
+		{
+			throw new IllegalArgumentException( "Unstable bars must be >= 0" );
+		}
+		this.name = name;
+		this.entryRule = entryRule;
+		this.exitRule = exitRule;
+		this.unstableBars = unstableBars;
+	}
 
-    @Override
-    public Rule getExitRule() {
-        return exitRule;
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return unstableBars;
-    }
+	@Override
+	public String getName()
+	{
+		return name;
+	}
 
-    @Override
-    public void setUnstableBars(int unstableBars) {
-        this.unstableBars = unstableBars;
-    }
 
-    @Override
-    public boolean isUnstableAt(int index) {
-        return index < unstableBars;
-    }
+	@Override
+	public Rule getEntryRule()
+	{
+		return entryRule;
+	}
 
-    @Override
-    public boolean shouldEnter(int index, TradingRecord tradingRecord) {
-        boolean enter = Strategy.super.shouldEnter(index, tradingRecord);
-        traceShouldEnter(index, enter);
-        return enter;
-    }
 
-    @Override
-    public boolean shouldExit(int index, TradingRecord tradingRecord) {
-        boolean exit = Strategy.super.shouldExit(index, tradingRecord);
-        traceShouldExit(index, exit);
-        return exit;
-    }
+	@Override
+	public Rule getExitRule()
+	{
+		return exitRule;
+	}
 
-    @Override
-    public Strategy and(Strategy strategy) {
-        String andName = "and(" + name + "," + strategy.getName() + ")";
-        int unstable = Math.max(unstableBars, strategy.getUnstableBars());
-        return and(andName, strategy, unstable);
-    }
 
-    @Override
-    public Strategy or(Strategy strategy) {
-        String orName = "or(" + name + "," + strategy.getName() + ")";
-        int unstable = Math.max(unstableBars, strategy.getUnstableBars());
-        return or(orName, strategy, unstable);
-    }
+	@Override
+	public int getUnstableBars()
+	{
+		return unstableBars;
+	}
 
-    @Override
-    public Strategy opposite() {
-        return new BaseStrategy("opposite(" + name + ")", exitRule, entryRule, unstableBars);
-    }
 
-    @Override
-    public Strategy and(String name, Strategy strategy, int unstableBars) {
-        return new BaseStrategy(name, entryRule.and(strategy.getEntryRule()), exitRule.and(strategy.getExitRule()),
-                unstableBars);
-    }
+	@Override
+	public void setUnstableBars(int unstableBars)
+	{
+		this.unstableBars = unstableBars;
+	}
 
-    @Override
-    public Strategy or(String name, Strategy strategy, int unstableBars) {
-        return new BaseStrategy(name, entryRule.or(strategy.getEntryRule()), exitRule.or(strategy.getExitRule()),
-                unstableBars);
-    }
 
-    /**
-     * Traces the shouldEnter() method calls.
-     *
-     * @param index the bar index
-     * @param enter true if the strategy should enter, false otherwise
-     */
-    protected void traceShouldEnter(int index, boolean enter) {
-        if (log.isTraceEnabled()) {
-            log.trace(">>> {}#shouldEnter({}): {}", className, index, enter);
-        }
-    }
+	@Override
+	public boolean isUnstableAt(int index)
+	{
+		return index < unstableBars;
+	}
 
-    /**
-     * Traces the shouldExit() method calls.
-     *
-     * @param index the bar index
-     * @param exit  true if the strategy should exit, false otherwise
-     */
-    protected void traceShouldExit(int index, boolean exit) {
-        if (log.isTraceEnabled()) {
-            log.trace(">>> {}#shouldExit({}): {}", className, index, exit);
-        }
-    }
+
+	@Override
+	public boolean shouldEnter(int index, TradingRecord tradingRecord)
+	{
+		boolean enter = Strategy.super.shouldEnter( index, tradingRecord );
+		traceShouldEnter( index, enter );
+		return enter;
+	}
+
+
+	@Override
+	public boolean shouldExit(int index, TradingRecord tradingRecord)
+	{
+		boolean exit = Strategy.super.shouldExit( index, tradingRecord );
+		traceShouldExit( index, exit );
+		return exit;
+	}
+
+
+	@Override
+	public Strategy and(Strategy strategy)
+	{
+		String andName = "and(" + name + "," + strategy.getName() + ")";
+		int unstable = Math.max( unstableBars, strategy.getUnstableBars() );
+		return and( andName, strategy, unstable );
+	}
+
+
+	@Override
+	public Strategy or(Strategy strategy)
+	{
+		String orName = "or(" + name + "," + strategy.getName() + ")";
+		int unstable = Math.max( unstableBars, strategy.getUnstableBars() );
+		return or( orName, strategy, unstable );
+	}
+
+
+	@Override
+	public Strategy opposite()
+	{
+		return new BaseStrategy( "opposite(" + name + ")", exitRule, entryRule, unstableBars );
+	}
+
+
+	@Override
+	public Strategy and(String name, Strategy strategy, int unstableBars)
+	{
+		return new BaseStrategy( name, entryRule.and( strategy.getEntryRule() ), exitRule.and( strategy.getExitRule() ),
+				unstableBars );
+	}
+
+
+	@Override
+	public Strategy or(String name, Strategy strategy, int unstableBars)
+	{
+		return new BaseStrategy( name, entryRule.or( strategy.getEntryRule() ), exitRule.or( strategy.getExitRule() ),
+				unstableBars );
+	}
+
+
+	/**
+	 * Traces the shouldEnter() method calls.
+	 *
+	 * @param index the bar index
+	 * @param enter true if the strategy should enter, false otherwise
+	 */
+	protected void traceShouldEnter(int index, boolean enter)
+	{
+		if (log.isTraceEnabled())
+		{
+			log.trace( ">>> {}#shouldEnter({}): {}", className, index, enter );
+		}
+	}
+
+
+	/**
+	 * Traces the shouldExit() method calls.
+	 *
+	 * @param index the bar index
+	 * @param exit  true if the strategy should exit, false otherwise
+	 */
+	protected void traceShouldExit(int index, boolean exit)
+	{
+		if (log.isTraceEnabled())
+		{
+			log.trace( ">>> {}#shouldExit({}): {}", className, index, exit );
+		}
+	}
 }

@@ -34,62 +34,76 @@ import org.ta4j.core.num.Num;
  *      "http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:moving_average_convergence_divergence_macd">
  *      http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:moving_average_convergence_divergence_macd</a>
  */
-public class MACDIndicator extends CachedIndicator<Num> {
+public class MACDIndicator extends CachedIndicator<Num>
+{
 
-    private final EMAIndicator shortTermEma;
-    private final EMAIndicator longTermEma;
+	private final EMAIndicator shortTermEma;
 
-    /**
-     * Constructor with:
-     * 
-     * <ul>
-     * <li>{@code shortBarCount} = 12
-     * <li>{@code longBarCount} = 26
-     * </ul>
-     *
-     * @param indicator the {@link Indicator}
-     */
-    public MACDIndicator(Indicator<Num> indicator) {
-        this(indicator, 12, 26);
-    }
+	private final EMAIndicator longTermEma;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator     the {@link Indicator}
-     * @param shortBarCount the short time frame (normally 12)
-     * @param longBarCount  the long time frame (normally 26)
-     */
-    public MACDIndicator(Indicator<Num> indicator, int shortBarCount, int longBarCount) {
-        super(indicator);
-        if (shortBarCount > longBarCount) {
-            throw new IllegalArgumentException("Long term period count must be greater than short term period count");
-        }
-        this.shortTermEma = new EMAIndicator(indicator, shortBarCount);
-        this.longTermEma = new EMAIndicator(indicator, longBarCount);
-    }
+	/**
+	 * Constructor with:
+	 * 
+	 * <ul>
+	 * <li>{@code shortBarCount} = 12
+	 * <li>{@code longBarCount} = 26
+	 * </ul>
+	 *
+	 * @param indicator the {@link Indicator}
+	 */
+	public MACDIndicator(Indicator<Num> indicator)
+	{
+		this( indicator, 12, 26 );
+	}
 
-    /**
-     * @return the Short term EMA indicator
-     */
-    public EMAIndicator getShortTermEma() {
-        return shortTermEma;
-    }
 
-    /**
-     * @return the Long term EMA indicator
-     */
-    public EMAIndicator getLongTermEma() {
-        return longTermEma;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator     the {@link Indicator}
+	 * @param shortBarCount the short time frame (normally 12)
+	 * @param longBarCount  the long time frame (normally 26)
+	 */
+	public MACDIndicator(Indicator<Num> indicator, int shortBarCount, int longBarCount)
+	{
+		super( indicator );
+		if (shortBarCount > longBarCount)
+		{
+			throw new IllegalArgumentException( "Long term period count must be greater than short term period count" );
+		}
+		this.shortTermEma = new EMAIndicator( indicator, shortBarCount );
+		this.longTermEma = new EMAIndicator( indicator, longBarCount );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        return shortTermEma.getValue(index).minus(longTermEma.getValue(index));
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	/**
+	 * @return the Short term EMA indicator
+	 */
+	public EMAIndicator getShortTermEma()
+	{
+		return shortTermEma;
+	}
+
+
+	/**
+	 * @return the Long term EMA indicator
+	 */
+	public EMAIndicator getLongTermEma()
+	{
+		return longTermEma;
+	}
+
+
+	@Override
+	protected Num calculate(int index)
+	{
+		return shortTermEma.getValue( index ).minus( longTermEma.getValue( index ) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

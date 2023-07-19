@@ -38,69 +38,85 @@ import org.ta4j.core.num.Num;
  * Or if you don't pass the threshold you will always just get the difference in
  * percentage from the precious value.
  */
-public class DifferencePercentageIndicator extends CachedIndicator<Num> {
+public class DifferencePercentageIndicator extends CachedIndicator<Num>
+{
+	private final Indicator<Num> indicator;
 
-    private final Indicator<Num> indicator;
-    private final Num percentageThreshold;
-    private final Num hundred;
-    private Num lastNotification;
+	private final Num percentageThreshold;
 
-    /**
-     * Constructor.
-     * 
-     * @param indicator the {@link Indicator}
-     */
-    public DifferencePercentageIndicator(Indicator<Num> indicator) {
-        this(indicator, indicator.zero());
-    }
+	private final Num hundred;
 
-    /**
-     * Constructor.
-     * 
-     * @param indicator           the {@link Indicator}
-     * @param percentageThreshold the threshold percentage
-     */
-    public DifferencePercentageIndicator(Indicator<Num> indicator, Number percentageThreshold) {
-        this(indicator, indicator.numOf(percentageThreshold));
-    }
+	private Num lastNotification;
 
-    /**
-     * Constructor.
-     * 
-     * @param indicator           the {@link Indicator}
-     * @param percentageThreshold the threshold percentage
-     */
-    public DifferencePercentageIndicator(Indicator<Num> indicator, Num percentageThreshold) {
-        super(indicator);
-        this.indicator = indicator;
-        this.percentageThreshold = percentageThreshold;
-        this.hundred = hundred();
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param indicator the {@link Indicator}
+	 */
+	public DifferencePercentageIndicator(Indicator<Num> indicator)
+	{
+		this( indicator, indicator.zero() );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        Num value = indicator.getValue((index));
-        if (lastNotification == null) {
-            lastNotification = value;
-            return NaN.NaN;
-        }
 
-        Num changeFraction = value.dividedBy(lastNotification);
-        Num changePercentage = fractionToPercentage(changeFraction);
+	/**
+	 * Constructor.
+	 * 
+	 * @param indicator           the {@link Indicator}
+	 * @param percentageThreshold the threshold percentage
+	 */
+	public DifferencePercentageIndicator(Indicator<Num> indicator, Number percentageThreshold)
+	{
+		this( indicator, indicator.numOf( percentageThreshold ) );
+	}
 
-        if (changePercentage.abs().isGreaterThanOrEqual(percentageThreshold)) {
-            lastNotification = value;
-        }
 
-        return changePercentage;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param indicator           the {@link Indicator}
+	 * @param percentageThreshold the threshold percentage
+	 */
+	public DifferencePercentageIndicator(Indicator<Num> indicator, Num percentageThreshold)
+	{
+		super( indicator );
+		this.indicator = indicator;
+		this.percentageThreshold = percentageThreshold;
+		this.hundred = hundred();
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
 
-    private Num fractionToPercentage(Num changeFraction) {
-        return changeFraction.multipliedBy(hundred).minus(hundred);
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		Num value = indicator.getValue( (index) );
+		if (lastNotification == null)
+		{
+			lastNotification = value;
+			return NaN.NaN;
+		}
+
+		Num changeFraction = value.dividedBy( lastNotification );
+		Num changePercentage = fractionToPercentage( changeFraction );
+
+		if (changePercentage.abs().isGreaterThanOrEqual( percentageThreshold ))
+		{
+			lastNotification = value;
+		}
+
+		return changePercentage;
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
+
+
+	private Num fractionToPercentage(Num changeFraction)
+	{
+		return changeFraction.multipliedBy( hundred ).minus( hundred );
+	}
 }

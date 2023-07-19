@@ -33,49 +33,61 @@ import org.ta4j.core.num.Num;
  *      "http://www.fmlabs.com/reference/default.htm?url=ZeroLagExpMA.htm">
  *      http://www.fmlabs.com/reference/default.htm?url=ZeroLagExpMA.htm</a>
  */
-public class ZLEMAIndicator extends RecursiveCachedIndicator<Num> {
+public class ZLEMAIndicator extends RecursiveCachedIndicator<Num>
+{
+	private final Indicator<Num> indicator;
 
-    private final Indicator<Num> indicator;
-    private final int barCount;
-    private final Num k;
-    private final int lag;
+	private final int barCount;
 
-    /**
-     * Constructor.
-     * 
-     * @param indicator the {@link Indicator}
-     * @param barCount  the time frame
-     */
-    public ZLEMAIndicator(Indicator<Num> indicator, int barCount) {
-        super(indicator);
-        this.indicator = indicator;
-        this.barCount = barCount;
-        this.k = numOf(2).dividedBy(numOf(barCount + 1));
-        this.lag = (barCount - 1) / 2;
-    }
+	private final Num k;
 
-    @Override
-    protected Num calculate(int index) {
-        if (index + 1 < barCount) {
-            // Starting point of the ZLEMA
-            return new SMAIndicator(indicator, barCount).getValue(index);
-        }
-        if (index == 0) {
-            // If the barCount is bigger than the indicator's value count
-            return indicator.getValue(0);
-        }
-        Num zlemaPrev = getValue(index - 1);
-        return k.multipliedBy(numOf(2).multipliedBy(indicator.getValue(index)).minus(indicator.getValue(index - lag)))
-                .plus(one().minus(k).multipliedBy(zlemaPrev));
-    }
+	private final int lag;
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param indicator the {@link Indicator}
+	 * @param barCount  the time frame
+	 */
+	public ZLEMAIndicator(Indicator<Num> indicator, int barCount)
+	{
+		super( indicator );
+		this.indicator = indicator;
+		this.barCount = barCount;
+		this.k = numOf( 2 ).dividedBy( numOf( barCount + 1 ) );
+		this.lag = (barCount - 1) / 2;
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
+
+	@Override
+	protected Num calculate(int index)
+	{
+		if (index + 1 < barCount)
+		{
+			// Starting point of the ZLEMA
+			return new SMAIndicator( indicator, barCount ).getValue( index );
+		}
+		if (index == 0)
+		{
+			// If the barCount is bigger than the indicator's value count
+			return indicator.getValue( 0 );
+		}
+		Num zlemaPrev = getValue( index - 1 );
+		return k.multipliedBy( numOf( 2 ).multipliedBy( indicator.getValue( index ) ).minus( indicator.getValue( index - lag ) ) )
+				.plus( one().minus( k ).multipliedBy( zlemaPrev ) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
 }

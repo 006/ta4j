@@ -35,47 +35,60 @@ import org.ta4j.core.num.Num;
  *      "http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:commodity_channel_in">
  *      http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:commodity_channel_in</a>
  */
-public class CCIIndicator extends CachedIndicator<Num> {
+public class CCIIndicator extends CachedIndicator<Num>
+{
 
-    private final Num factor;
-    private final TypicalPriceIndicator typicalPriceInd;
-    private final SMAIndicator smaInd;
-    private final MeanDeviationIndicator meanDeviationInd;
-    private final int barCount;
+	private final Num factor;
 
-    /**
-     * Constructor.
-     *
-     * @param series   the bar series
-     * @param barCount the time frame (normally 20)
-     */
-    public CCIIndicator(BarSeries series, int barCount) {
-        super(series);
-        this.factor = numOf(0.015);
-        this.typicalPriceInd = new TypicalPriceIndicator(series);
-        this.smaInd = new SMAIndicator(typicalPriceInd, barCount);
-        this.meanDeviationInd = new MeanDeviationIndicator(typicalPriceInd, barCount);
-        this.barCount = barCount;
-    }
+	private final TypicalPriceIndicator typicalPriceInd;
 
-    @Override
-    protected Num calculate(int index) {
-        final Num typicalPrice = typicalPriceInd.getValue(index);
-        final Num typicalPriceAvg = smaInd.getValue(index);
-        final Num meanDeviation = meanDeviationInd.getValue(index);
-        if (meanDeviation.isZero()) {
-            return zero();
-        }
-        return (typicalPrice.minus(typicalPriceAvg)).dividedBy(meanDeviation.multipliedBy(factor));
-    }
+	private final SMAIndicator smaInd;
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
+	private final MeanDeviationIndicator meanDeviationInd;
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
+	private final int barCount;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param series   the bar series
+	 * @param barCount the time frame (normally 20)
+	 */
+	public CCIIndicator(BarSeries series, int barCount)
+	{
+		super( series );
+		this.factor = numOf( 0.015 );
+		this.typicalPriceInd = new TypicalPriceIndicator( series );
+		this.smaInd = new SMAIndicator( typicalPriceInd, barCount );
+		this.meanDeviationInd = new MeanDeviationIndicator( typicalPriceInd, barCount );
+		this.barCount = barCount;
+	}
+
+
+	@Override
+	protected Num calculate(int index)
+	{
+		final Num typicalPrice = typicalPriceInd.getValue( index );
+		final Num typicalPriceAvg = smaInd.getValue( index );
+		final Num meanDeviation = meanDeviationInd.getValue( index );
+		if (meanDeviation.isZero())
+		{
+			return zero();
+		}
+		return (typicalPrice.minus( typicalPriceAvg )).dividedBy( meanDeviation.multipliedBy( factor ) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
 }

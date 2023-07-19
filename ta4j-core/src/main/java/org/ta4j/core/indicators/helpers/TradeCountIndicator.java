@@ -32,24 +32,30 @@ import org.ta4j.core.indicators.CachedIndicator;
  * <p>
  * Returns the number of trades of a bar.
  */
-public class TradeCountIndicator extends CachedIndicator<Long> {
+public class TradeCountIndicator extends CachedIndicator<Long>
+{
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public TradeCountIndicator(BarSeries series) {
-        super(series);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public TradeCountIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    @Override
-    protected Long calculate(int index) {
-        return getBarSeries().getBar(index).getTrades();
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	@Override
+	protected Long calculate(int index)
+	{
+		return getBarSeries().getBar( index ).getTrades();
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

@@ -35,47 +35,57 @@ import org.ta4j.core.num.Num;
  *      "http://en.wikipedia.org/wiki/Mean_absolute_deviation#Average_absolute_deviation">
  *      http://en.wikipedia.org/wiki/Mean_absolute_deviation#Average_absolute_deviation</a>
  */
-public class MeanDeviationIndicator extends CachedIndicator<Num> {
+public class MeanDeviationIndicator extends CachedIndicator<Num>
+{
+	private final Indicator<Num> indicator;
 
-    private final Indicator<Num> indicator;
-    private final int barCount;
-    private final SMAIndicator sma;
+	private final int barCount;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator
-     * @param barCount  the time frame
-     */
-    public MeanDeviationIndicator(Indicator<Num> indicator, int barCount) {
-        super(indicator);
-        this.indicator = indicator;
-        this.barCount = barCount;
-        this.sma = new SMAIndicator(indicator, barCount);
-    }
+	private final SMAIndicator sma;
 
-    @Override
-    protected Num calculate(int index) {
-        Num absoluteDeviations = zero();
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator
+	 * @param barCount  the time frame
+	 */
+	public MeanDeviationIndicator(Indicator<Num> indicator, int barCount)
+	{
+		super( indicator );
+		this.indicator = indicator;
+		this.barCount = barCount;
+		this.sma = new SMAIndicator( indicator, barCount );
+	}
 
-        final Num average = sma.getValue(index);
-        final int startIndex = Math.max(0, index - barCount + 1);
-        final int nbValues = index - startIndex + 1;
 
-        for (int i = startIndex; i <= index; i++) {
-            // For each period...
-            absoluteDeviations = absoluteDeviations.plus(indicator.getValue(i).minus(average).abs());
-        }
-        return absoluteDeviations.dividedBy(numOf(nbValues));
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		Num absoluteDeviations = zero();
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
+		final Num average = sma.getValue( index );
+		final int startIndex = Math.max( 0, index - barCount + 1 );
+		final int nbValues = index - startIndex + 1;
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
+		for ( int i = startIndex; i <= index; i++ )
+		{
+			// For each period...
+			absoluteDeviations = absoluteDeviations.plus( indicator.getValue( i ).minus( average ).abs() );
+		}
+		return absoluteDeviations.dividedBy( numOf( nbValues ) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
 }

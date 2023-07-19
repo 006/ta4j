@@ -33,24 +33,29 @@ import org.ta4j.core.num.Num;
  * <p>
  * Returns the close price of a bar.
  */
-public class ClosePriceIndicator extends AbstractIndicator<Num> {
+public class ClosePriceIndicator extends AbstractIndicator<Num>
+{
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public ClosePriceIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public ClosePriceIndicator(BarSeries series) {
-        super(series);
-    }
 
-    @Override
-    public Num getValue(int index) {
-        return getBarSeries().getBar(index).getClosePrice();
-    }
+	@Override
+	public Num getValue(int index)
+	{
+		return getBarSeries().getBar( index ).getClosePrice();
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

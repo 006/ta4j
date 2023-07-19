@@ -34,41 +34,49 @@ import org.ta4j.core.num.Num;
  * @see <a href="http://alanhull.com/hull-moving-average">
  *      http://alanhull.com/hull-moving-average</a>
  */
-public class HMAIndicator extends CachedIndicator<Num> {
+public class HMAIndicator extends CachedIndicator<Num>
+{
+	private final int barCount;
 
-    private final int barCount;
-    private final WMAIndicator sqrtWma;
+	private final WMAIndicator sqrtWma;
 
-    /**
-     * Constructor.
-     * 
-     * @param indicator the {@link Indicator}
-     * @param barCount  the time frame
-     */
-    public HMAIndicator(Indicator<Num> indicator, int barCount) {
-        super(indicator);
-        this.barCount = barCount;
+	/**
+	 * Constructor.
+	 * 
+	 * @param indicator the {@link Indicator}
+	 * @param barCount  the time frame
+	 */
+	public HMAIndicator(Indicator<Num> indicator, int barCount)
+	{
+		super( indicator );
+		this.barCount = barCount;
 
-        WMAIndicator halfWma = new WMAIndicator(indicator, barCount / 2);
-        WMAIndicator origWma = new WMAIndicator(indicator, barCount);
+		WMAIndicator halfWma = new WMAIndicator( indicator, barCount / 2 );
+		WMAIndicator origWma = new WMAIndicator( indicator, barCount );
 
-        Indicator<Num> indicatorForSqrtWma = CombineIndicator.minus(TransformIndicator.multiply(halfWma, 2), origWma);
-        this.sqrtWma = new WMAIndicator(indicatorForSqrtWma, numOf(barCount).sqrt().intValue());
-    }
+		Indicator<Num> indicatorForSqrtWma = CombineIndicator.minus( TransformIndicator.multiply( halfWma, 2 ), origWma );
+		this.sqrtWma = new WMAIndicator( indicatorForSqrtWma, numOf( barCount ).sqrt().intValue() );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        return sqrtWma.getValue(index);
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		return sqrtWma.getValue( index );
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
 
 }

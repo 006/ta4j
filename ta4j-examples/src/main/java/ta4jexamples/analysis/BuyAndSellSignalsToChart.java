@@ -56,115 +56,120 @@ import ta4jexamples.strategies.MovingMomentumStrategy;
  * This class builds a graphical chart showing the buy/sell signals of a
  * strategy.
  */
-public class BuyAndSellSignalsToChart {
+public class BuyAndSellSignalsToChart
+{
+	/**
+	 * Builds a JFreeChart time series from a Ta4j bar series and an indicator.
+	 *
+	 * @param barSeries the ta4j bar series
+	 * @param indicator the indicator
+	 * @param name      the name of the chart time series
+	 * @return the JFreeChart time series
+	 */
+	private static org.jfree.data.time.TimeSeries buildChartTimeSeries(BarSeries barSeries, Indicator<Num> indicator, String name)
+	{
+		org.jfree.data.time.TimeSeries chartTimeSeries = new org.jfree.data.time.TimeSeries( name );
+		for ( int i = 0; i < barSeries.getBarCount(); i++ )
+		{
+			Bar bar = barSeries.getBar( i );
+			chartTimeSeries.add( new Minute( Date.from( bar.getEndTime().toInstant() ) ), indicator.getValue( i ).doubleValue() );
+		}
+		return chartTimeSeries;
+	}
 
-    /**
-     * Builds a JFreeChart time series from a Ta4j bar series and an indicator.
-     *
-     * @param barSeries the ta4j bar series
-     * @param indicator the indicator
-     * @param name      the name of the chart time series
-     * @return the JFreeChart time series
-     */
-    private static org.jfree.data.time.TimeSeries buildChartTimeSeries(BarSeries barSeries, Indicator<Num> indicator,
-            String name) {
-        org.jfree.data.time.TimeSeries chartTimeSeries = new org.jfree.data.time.TimeSeries(name);
-        for (int i = 0; i < barSeries.getBarCount(); i++) {
-            Bar bar = barSeries.getBar(i);
-            chartTimeSeries.add(new Minute(Date.from(bar.getEndTime().toInstant())),
-                    indicator.getValue(i).doubleValue());
-        }
-        return chartTimeSeries;
-    }
 
-    /**
-     * Runs a strategy over a bar series and adds the value markers corresponding to
-     * buy/sell signals to the plot.
-     *
-     * @param series   the bar series
-     * @param strategy the trading strategy
-     * @param plot     the plot
-     */
-    private static void addBuySellSignals(BarSeries series, Strategy strategy, XYPlot plot) {
-        // Running the strategy
-        BarSeriesManager seriesManager = new BarSeriesManager(series);
-        List<Position> positions = seriesManager.run(strategy).getPositions();
-        // Adding markers to plot
-        for (Position position : positions) {
-            // Buy signal
-            double buySignalBarTime = new Minute(
-                    Date.from(series.getBar(position.getEntry().getIndex()).getEndTime().toInstant()))
-                            .getFirstMillisecond();
-            Marker buyMarker = new ValueMarker(buySignalBarTime);
-            buyMarker.setPaint(Color.GREEN);
-            buyMarker.setLabel("B");
-            plot.addDomainMarker(buyMarker);
-            // Sell signal
-            double sellSignalBarTime = new Minute(
-                    Date.from(series.getBar(position.getExit().getIndex()).getEndTime().toInstant()))
-                            .getFirstMillisecond();
-            Marker sellMarker = new ValueMarker(sellSignalBarTime);
-            sellMarker.setPaint(Color.RED);
-            sellMarker.setLabel("S");
-            plot.addDomainMarker(sellMarker);
-        }
-    }
+	/**
+	 * Runs a strategy over a bar series and adds the value markers corresponding to
+	 * buy/sell signals to the plot.
+	 *
+	 * @param series   the bar series
+	 * @param strategy the trading strategy
+	 * @param plot     the plot
+	 */
+	private static void addBuySellSignals(BarSeries series, Strategy strategy, XYPlot plot)
+	{
+		// Running the strategy
+		BarSeriesManager seriesManager = new BarSeriesManager( series );
+		List<Position> positions = seriesManager.run( strategy ).getPositions();
+		// Adding markers to plot
+		for ( Position position : positions )
+		{
+			// Buy signal
+			double buySignalBarTime = new Minute(
+					Date.from( series.getBar( position.getEntry().getIndex() ).getEndTime().toInstant() ) ).getFirstMillisecond();
+			Marker buyMarker = new ValueMarker( buySignalBarTime );
+			buyMarker.setPaint( Color.GREEN );
+			buyMarker.setLabel( "B" );
+			plot.addDomainMarker( buyMarker );
+			// Sell signal
+			double sellSignalBarTime = new Minute(
+					Date.from( series.getBar( position.getExit().getIndex() ).getEndTime().toInstant() ) ).getFirstMillisecond();
+			Marker sellMarker = new ValueMarker( sellSignalBarTime );
+			sellMarker.setPaint( Color.RED );
+			sellMarker.setLabel( "S" );
+			plot.addDomainMarker( sellMarker );
+		}
+	}
 
-    /**
-     * Displays a chart in a frame.
-     *
-     * @param chart the chart to be displayed
-     */
-    private static void displayChart(JFreeChart chart) {
-        // Chart panel
-        ChartPanel panel = new ChartPanel(chart);
-        panel.setFillZoomRectangle(true);
-        panel.setMouseWheelEnabled(true);
-        panel.setPreferredSize(new Dimension(1024, 400));
-        // Application frame
-        ApplicationFrame frame = new ApplicationFrame("Ta4j example - Buy and sell signals to chart");
-        frame.setContentPane(panel);
-        frame.pack();
-        UIUtils.centerFrameOnScreen(frame);
-        frame.setVisible(true);
-    }
 
-    public static void main(String[] args) {
+	/**
+	 * Displays a chart in a frame.
+	 *
+	 * @param chart the chart to be displayed
+	 */
+	private static void displayChart(JFreeChart chart)
+	{
+		// Chart panel
+		ChartPanel panel = new ChartPanel( chart );
+		panel.setFillZoomRectangle( true );
+		panel.setMouseWheelEnabled( true );
+		panel.setPreferredSize( new Dimension( 1024, 400 ) );
+		// Application frame
+		ApplicationFrame frame = new ApplicationFrame( "Ta4j example - Buy and sell signals to chart" );
+		frame.setContentPane( panel );
+		frame.pack();
+		UIUtils.centerFrameOnScreen( frame );
+		frame.setVisible( true );
+	}
 
-        // Getting the bar series
-        BarSeries series = CsvTradesLoader.loadBitstampSeries();
-        // Building the trading strategy
-        Strategy strategy = MovingMomentumStrategy.buildStrategy(series);
 
-        /*
-         * Building chart datasets
-         */
-        TimeSeriesCollection dataset = new TimeSeriesCollection();
-        dataset.addSeries(buildChartTimeSeries(series, new ClosePriceIndicator(series), "Bitstamp Bitcoin (BTC)"));
+	public static void main(String[] args)
+	{
 
-        /*
-         * Creating the chart
-         */
-        JFreeChart chart = ChartFactory.createTimeSeriesChart("Bitstamp BTC", // title
-                "Date", // x-axis label
-                "Price", // y-axis label
-                dataset, // data
-                true, // create legend?
-                true, // generate tooltips?
-                false // generate URLs?
-        );
-        XYPlot plot = (XYPlot) chart.getPlot();
-        DateAxis axis = (DateAxis) plot.getDomainAxis();
-        axis.setDateFormatOverride(new SimpleDateFormat("MM-dd HH:mm"));
+		// Getting the bar series
+		BarSeries series = CsvTradesLoader.loadBitstampSeries();
+		// Building the trading strategy
+		Strategy strategy = MovingMomentumStrategy.buildStrategy( series );
 
-        /*
-         * Running the strategy and adding the buy and sell signals to plot
-         */
-        addBuySellSignals(series, strategy, plot);
+		/*
+		 * Building chart datasets
+		 */
+		TimeSeriesCollection dataset = new TimeSeriesCollection();
+		dataset.addSeries( buildChartTimeSeries( series, new ClosePriceIndicator( series ), "Bitstamp Bitcoin (BTC)" ) );
 
-        /*
-         * Displaying the chart
-         */
-        displayChart(chart);
-    }
+		/*
+		 * Creating the chart
+		 */
+		JFreeChart chart = ChartFactory.createTimeSeriesChart( "Bitstamp BTC", // title
+				"Date", // x-axis label
+				"Price", // y-axis label
+				dataset, // data
+				true, // create legend?
+				true, // generate tooltips?
+				false // generate URLs?
+		);
+		XYPlot plot = (XYPlot) chart.getPlot();
+		DateAxis axis = (DateAxis) plot.getDomainAxis();
+		axis.setDateFormatOverride( new SimpleDateFormat( "MM-dd HH:mm" ) );
+
+		/*
+		 * Running the strategy and adding the buy and sell signals to plot
+		 */
+		addBuySellSignals( series, strategy, plot );
+
+		/*
+		 * Displaying the chart
+		 */
+		displayChart( chart );
+	}
 }

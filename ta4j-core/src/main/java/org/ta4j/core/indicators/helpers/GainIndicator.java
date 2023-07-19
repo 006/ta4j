@@ -35,34 +35,43 @@ import org.ta4j.core.num.Num;
  * if the indicator value of the current bar is greater than the indicator value
  * of the previous bar (otherwise, {@link Num#zero()} is returned).
  */
-public class GainIndicator extends CachedIndicator<Num> {
+public class GainIndicator extends CachedIndicator<Num>
+{
+	private final Indicator<Num> indicator;
 
-    private final Indicator<Num> indicator;
+	/**
+	 * Constructor.
+	 * 
+	 * @param indicator the {@link Indicator}
+	 */
+	public GainIndicator(Indicator<Num> indicator)
+	{
+		super( indicator );
+		this.indicator = indicator;
+	}
 
-    /**
-     * Constructor.
-     * 
-     * @param indicator the {@link Indicator}
-     */
-    public GainIndicator(Indicator<Num> indicator) {
-        super(indicator);
-        this.indicator = indicator;
-    }
 
-    @Override
-    protected Num calculate(int index) {
-        if (index == 0) {
-            return zero();
-        }
-        if (indicator.getValue(index).isGreaterThan(indicator.getValue(index - 1))) {
-            return indicator.getValue(index).minus(indicator.getValue(index - 1));
-        } else {
-            return zero();
-        }
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		if (index == 0)
+		{
+			return zero();
+		}
+		if (indicator.getValue( index ).isGreaterThan( indicator.getValue( index - 1 ) ))
+		{
+			return indicator.getValue( index ).minus( indicator.getValue( index - 1 ) );
+		}
+		else
+		{
+			return zero();
+		}
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

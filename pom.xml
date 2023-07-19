@@ -1,15 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ta4j</groupId>
 	<artifactId>ta4j-parent</artifactId>
 	<version>0.16-SNAPSHOT</version>
 	<packaging>pom</packaging>
-
 	<name>Ta4j Parent</name>
 	<description>ta4j is a Java library providing a simple API for technical analysis.</description>
 	<url>http://github.com/ta4j/ta4j</url>
 	<inceptionYear>2014</inceptionYear>
-
 	<developers>
 		<developer>
 			<name>Marc de Verdelhan</name>
@@ -18,66 +18,156 @@
 			<name>Simon-Justus Wimmer</name>
 		</developer>
 	</developers>
-
 	<licenses>
 		<license>
 			<name>MIT License</name>
 			<comments>All source code is under the MIT license.</comments>
 		</license>
 	</licenses>
-
 	<issueManagement>
 		<system>GitHub</system>
 		<url>http://github.com/ta4j/ta4j/issues</url>
 	</issueManagement>
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>sonatype-nexus-snapshots</id>
-			<name>Sonatype Nexus snapshot repository</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
+	<repositories>
 		<repository>
-			<id>sonatype-nexus-staging</id>
-			<name>Sonatype Nexus release repository</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+			<id>tsst-releases</id>
+			<name>Tsst Internal Releases</name>
+			<url>http://maven.tsst.cc/nexus/content/groups/tsst/</url>
 		</repository>
+		<repository>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+			<id>tsst-snapshots</id>
+			<name>Tsst Snapshots Repository</name>
+			<url>http://maven.tsst.cc/nexus/content/repositories/tsst-snapshots/</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>tsst-releases</id>
+			<name>Tsst Internal Releases</name>
+			<url>http://maven.tsst.cc/nexus/content/repositories/tsst-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>tsst-snapshots</id>
+			<name>Tsst Snapshots Repository</name>
+			<url>http://maven.tsst.cc/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
 	</distributionManagement>
-
+	<pluginRepositories>
+		<pluginRepository>
+			<id>tsst-releases</id>
+			<name>Tsst Internal Releases</name>
+			<url>http://maven.tsst.cc/nexus/content/groups/tsst/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 	<ciManagement>
 		<url>http://travis-ci.org/ta4j/ta4j</url>
 	</ciManagement>
-
 	<scm>
 		<connection>scm:git:git://github.com/ta4j/ta4j.git</connection>
 		<developerConnection>scm:git:git@github.com:ta4j/ta4j.git</developerConnection>
 		<url>http://github.com/ta4j/ta4j</url>
 		<tag>0.14</tag>
 	</scm>
-
 	<modules>
 		<module>ta4j-core</module>
 		<module>ta4j-examples</module>
 	</modules>
-
 	<properties>
 		<!-- Encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.4.4</version>
+				<version>1.4.8</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>2.0.7</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	<dependencies>
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13</version>
+			<!-- <scope>test</scope> -->
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.2.2</version>
+			<!-- <scope>test</scope> -->
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<!-- <scope>test</scope> -->
+		</dependency>
+		<!-- Logging facade -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>5.7.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.10.1</version>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.logging.log4j</groupId> -->
+		<!-- <artifactId>log4j-api</artifactId> -->
+		<!-- <version>2.20.0</version> -->
+		<!-- </dependency> -->
+	</dependencies>
 	<profiles>
-
 		<!-- Only when performing a release (i.e. not for snapshots) -->
 		<profile>
 			<id>sonatype-oss-release</id>
@@ -133,10 +223,8 @@
 		</profile>
 
 	</profiles>
-
 	<build>
 		<plugins>
-
 			<!-- Build source and target -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -183,9 +271,9 @@
 				<groupId>net.revelc.code.formatter</groupId>
 				<artifactId>formatter-maven-plugin</artifactId>
 				<version>2.10.0</version>
-					<configuration>
-						<configFile>${project.basedir}/code-formatter.xml</configFile>
-					</configuration>
+				<configuration>
+					<configFile>${project.basedir}/code-formatter.xml</configFile>
+				</configuration>
 			</plugin>
 
 			<!-- Releases -->
@@ -207,5 +295,4 @@
 
 		</plugins>
 	</build>
-
 </project>

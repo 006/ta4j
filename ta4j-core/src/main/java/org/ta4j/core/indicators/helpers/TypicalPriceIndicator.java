@@ -38,28 +38,34 @@ import org.ta4j.core.num.Num;
  * TypicalPrice = (highPrice + lowPrice + closePrice) / 3
  * </pre>
  */
-public class TypicalPriceIndicator extends CachedIndicator<Num> {
+public class TypicalPriceIndicator extends CachedIndicator<Num>
+{
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public TypicalPriceIndicator(BarSeries series) {
-        super(series);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public TypicalPriceIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        final Bar bar = getBarSeries().getBar(index);
-        final Num highPrice = bar.getHighPrice();
-        final Num lowPrice = bar.getLowPrice();
-        final Num closePrice = bar.getClosePrice();
-        return highPrice.plus(lowPrice).plus(closePrice).dividedBy(numOf(3));
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		final Bar bar = getBarSeries().getBar( index );
+		final Num highPrice = bar.getHighPrice();
+		final Num lowPrice = bar.getLowPrice();
+		final Num closePrice = bar.getClosePrice();
+		return highPrice.plus( lowPrice ).plus( closePrice ).dividedBy( numOf( 3 ) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

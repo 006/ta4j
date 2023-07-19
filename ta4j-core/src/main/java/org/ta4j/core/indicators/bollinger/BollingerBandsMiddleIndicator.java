@@ -35,36 +35,45 @@ import org.ta4j.core.num.Num;
  * Sell - Occurs when the price line crosses from above to below the Upper
  * Bollinger Band.
  */
-public class BollingerBandsMiddleIndicator extends CachedIndicator<Num> {
+public class BollingerBandsMiddleIndicator extends CachedIndicator<Num>
+{
+	private final Indicator<Num> indicator;
 
-    private final Indicator<Num> indicator;
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator that gives the values of the middle band
+	 */
+	public BollingerBandsMiddleIndicator(Indicator<Num> indicator)
+	{
+		super( indicator );
+		this.indicator = indicator;
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator that gives the values of the middle band
-     */
-    public BollingerBandsMiddleIndicator(Indicator<Num> indicator) {
-        super(indicator);
-        this.indicator = indicator;
-    }
 
-    @Override
-    protected Num calculate(int index) {
-        return indicator.getValue(index);
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		return indicator.getValue( index );
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
 
-    public Indicator<Num> getIndicator() {
-        return indicator;
-    }
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " deviation: " + indicator;
-    }
+
+	public Indicator<Num> getIndicator()
+	{
+		return indicator;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " deviation: " + indicator;
+	}
 }

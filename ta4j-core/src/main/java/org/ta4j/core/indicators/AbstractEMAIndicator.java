@@ -29,41 +29,51 @@ import org.ta4j.core.num.Num;
 /**
  * Base class for Exponential Moving Average implementations.
  */
-public abstract class AbstractEMAIndicator extends RecursiveCachedIndicator<Num> {
+public abstract class AbstractEMAIndicator extends RecursiveCachedIndicator<Num>
+{
+	private final Indicator<Num> indicator;
 
-    private final Indicator<Num> indicator;
-    private final int barCount;
-    private final Num multiplier;
+	private final int barCount;
 
-    /**
-     * Constructor.
-     * 
-     * @param indicator  the {@link Indicator}
-     * @param barCount   the time frame
-     * @param multiplier the multiplier
-     */
-    protected AbstractEMAIndicator(Indicator<Num> indicator, int barCount, double multiplier) {
-        super(indicator);
-        this.indicator = indicator;
-        this.barCount = barCount;
-        this.multiplier = numOf(multiplier);
-    }
+	private final Num multiplier;
 
-    @Override
-    protected Num calculate(int index) {
-        if (index == 0) {
-            return indicator.getValue(0);
-        }
-        Num prevValue = getValue(index - 1);
-        return indicator.getValue(index).minus(prevValue).multipliedBy(multiplier).plus(prevValue);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param indicator  the {@link Indicator}
+	 * @param barCount   the time frame
+	 * @param multiplier the multiplier
+	 */
+	protected AbstractEMAIndicator(Indicator<Num> indicator, int barCount, double multiplier)
+	{
+		super( indicator );
+		this.indicator = indicator;
+		this.barCount = barCount;
+		this.multiplier = numOf( multiplier );
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
 
-    public int getBarCount() {
-        return barCount;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		if (index == 0)
+		{
+			return indicator.getValue( 0 );
+		}
+		Num prevValue = getValue( index - 1 );
+		return indicator.getValue( index ).minus( prevValue ).multipliedBy( multiplier ).plus( prevValue );
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
+
+
+	public int getBarCount()
+	{
+		return barCount;
+	}
 }

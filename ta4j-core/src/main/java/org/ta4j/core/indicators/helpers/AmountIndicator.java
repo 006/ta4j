@@ -33,24 +33,29 @@ import org.ta4j.core.num.Num;
  * <p>
  * Returns the amount of a bar.
  */
-public class AmountIndicator extends CachedIndicator<Num> {
+public class AmountIndicator extends CachedIndicator<Num>
+{
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public AmountIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public AmountIndicator(BarSeries series) {
-        super(series);
-    }
 
-    @Override
-    protected Num calculate(int index) {
-        return getBarSeries().getBar(index).getAmount();
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		return getBarSeries().getBar( index ).getAmount();
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

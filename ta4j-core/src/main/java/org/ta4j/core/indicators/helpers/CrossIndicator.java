@@ -33,62 +33,76 @@ import org.ta4j.core.num.Num;
  * <p>
  * Boolean indicator that monitors the crossing of two indicators.
  */
-public class CrossIndicator extends CachedIndicator<Boolean> {
+public class CrossIndicator extends CachedIndicator<Boolean>
+{
+	/** Upper indicator */
+	private final Indicator<Num> up;
 
-    /** Upper indicator */
-    private final Indicator<Num> up;
+	/** Lower indicator */
+	private final Indicator<Num> low;
 
-    /** Lower indicator */
-    private final Indicator<Num> low;
+	/**
+	 * Constructor.
+	 *
+	 * @param up  the upper indicator
+	 * @param low the lower indicator
+	 */
+	public CrossIndicator(Indicator<Num> up, Indicator<Num> low)
+	{
+		// TODO: check if up series is equal to low series
+		super( up );
+		this.up = up;
+		this.low = low;
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param up  the upper indicator
-     * @param low the lower indicator
-     */
-    public CrossIndicator(Indicator<Num> up, Indicator<Num> low) {
-        // TODO: check if up series is equal to low series
-        super(up);
-        this.up = up;
-        this.low = low;
-    }
 
-    @Override
-    protected Boolean calculate(int index) {
+	@Override
+	protected Boolean calculate(int index)
+	{
 
-        int i = index;
-        if (i == 0 || up.getValue(i).isGreaterThanOrEqual(low.getValue(i))) {
-            return false;
-        }
+		int i = index;
+		if (i == 0 || up.getValue( i ).isGreaterThanOrEqual( low.getValue( i ) ))
+		{
+			return false;
+		}
 
-        i--;
-        if (up.getValue(i).isGreaterThan(low.getValue(i))) {
-            return true;
-        }
-        while (i > 0 && up.getValue(i).isEqual(low.getValue(i))) {
-            i--;
-        }
-        return (i != 0) && (up.getValue(i).isGreaterThan(low.getValue(i)));
-    }
+		i--;
+		if (up.getValue( i ).isGreaterThan( low.getValue( i ) ))
+		{
+			return true;
+		}
+		while (i > 0 && up.getValue( i ).isEqual( low.getValue( i ) ))
+		{
+			i--;
+		}
+		return (i != 0) && (up.getValue( i ).isGreaterThan( low.getValue( i ) ));
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
 
-    /** @return the initial lower indicator */
-    public Indicator<Num> getLow() {
-        return low;
-    }
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 
-    /** @return the initial upper indicator */
-    public Indicator<Num> getUp() {
-        return up;
-    }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " " + low + " " + up;
-    }
+	/** @return the initial lower indicator */
+	public Indicator<Num> getLow()
+	{
+		return low;
+	}
+
+
+	/** @return the initial upper indicator */
+	public Indicator<Num> getUp()
+	{
+		return up;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " " + low + " " + up;
+	}
 }

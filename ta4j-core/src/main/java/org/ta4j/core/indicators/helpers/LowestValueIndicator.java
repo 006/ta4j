@@ -33,45 +33,57 @@ import org.ta4j.core.num.Num;
  * <p>
  * Returns the lowest indicator value from the bar series within the bar count.
  */
-public class LowestValueIndicator extends CachedIndicator<Num> {
+public class LowestValueIndicator extends CachedIndicator<Num>
+{
 
-    private final Indicator<Num> indicator;
-    private final int barCount;
+	private final Indicator<Num> indicator;
 
-    /**
-     * Constructor.
-     * 
-     * @param indicator the {@link Indicator}
-     * @param barCount  the time frame
-     */
-    public LowestValueIndicator(Indicator<Num> indicator, int barCount) {
-        super(indicator);
-        this.indicator = indicator;
-        this.barCount = barCount;
-    }
+	private final int barCount;
 
-    @Override
-    protected Num calculate(int index) {
-        if (indicator.getValue(index).isNaN() && barCount != 1) {
-            return new LowestValueIndicator(indicator, barCount - 1).getValue(index - 1);
-        }
-        int end = Math.max(0, index - barCount + 1);
-        Num lowest = indicator.getValue(index);
-        for (int i = index - 1; i >= end; i--) {
-            if (lowest.isGreaterThan(indicator.getValue(i))) {
-                lowest = indicator.getValue(i);
-            }
-        }
-        return lowest;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param indicator the {@link Indicator}
+	 * @param barCount  the time frame
+	 */
+	public LowestValueIndicator(Indicator<Num> indicator, int barCount)
+	{
+		super( indicator );
+		this.indicator = indicator;
+		this.barCount = barCount;
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		if (indicator.getValue( index ).isNaN() && barCount != 1)
+		{
+			return new LowestValueIndicator( indicator, barCount - 1 ).getValue( index - 1 );
+		}
+		int end = Math.max( 0, index - barCount + 1 );
+		Num lowest = indicator.getValue( index );
+		for ( int i = index - 1; i >= end; i-- )
+		{
+			if (lowest.isGreaterThan( indicator.getValue( i ) ))
+			{
+				lowest = indicator.getValue( i );
+			}
+		}
+		return lowest;
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
 }

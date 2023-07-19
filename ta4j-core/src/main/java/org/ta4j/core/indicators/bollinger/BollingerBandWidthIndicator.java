@@ -33,37 +33,45 @@ import org.ta4j.core.num.Num;
  *      "http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:bollinger_band_width">
  *      http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:bollinger_band_width</a>
  */
-public class BollingerBandWidthIndicator extends CachedIndicator<Num> {
+public class BollingerBandWidthIndicator extends CachedIndicator<Num>
+{
+	private final BollingerBandsUpperIndicator bbu;
 
-    private final BollingerBandsUpperIndicator bbu;
-    private final BollingerBandsMiddleIndicator bbm;
-    private final BollingerBandsLowerIndicator bbl;
-    private final Num hundred;
+	private final BollingerBandsMiddleIndicator bbm;
 
-    /**
-     * Constructor.
-     *
-     * @param bbu the upper band Indicator.
-     * @param bbm the middle band Indicator. Typically an {@code SMAIndicator} is
-     *            used.
-     * @param bbl the lower band Indicator.
-     */
-    public BollingerBandWidthIndicator(BollingerBandsUpperIndicator bbu, BollingerBandsMiddleIndicator bbm,
-            BollingerBandsLowerIndicator bbl) {
-        super(bbm.getBarSeries());
-        this.bbu = bbu;
-        this.bbm = bbm;
-        this.bbl = bbl;
-        this.hundred = bbm.getBarSeries().hundred();
-    }
+	private final BollingerBandsLowerIndicator bbl;
 
-    @Override
-    protected Num calculate(int index) {
-        return bbu.getValue(index).minus(bbl.getValue(index)).dividedBy(bbm.getValue(index)).multipliedBy(hundred);
-    }
+	private final Num hundred;
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param bbu the upper band Indicator.
+	 * @param bbm the middle band Indicator. Typically an {@code SMAIndicator} is
+	 *            used.
+	 * @param bbl the lower band Indicator.
+	 */
+	public BollingerBandWidthIndicator(BollingerBandsUpperIndicator bbu, BollingerBandsMiddleIndicator bbm,
+			BollingerBandsLowerIndicator bbl)
+	{
+		super( bbm.getBarSeries() );
+		this.bbu = bbu;
+		this.bbm = bbm;
+		this.bbl = bbl;
+		this.hundred = bbm.getBarSeries().hundred();
+	}
+
+
+	@Override
+	protected Num calculate(int index)
+	{
+		return bbu.getValue( index ).minus( bbl.getValue( index ) ).dividedBy( bbm.getValue( index ) ).multipliedBy( hundred );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

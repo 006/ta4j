@@ -41,38 +41,47 @@ import org.ta4j.core.num.Num;
  * @see <a href=
  *      "https://www.investopedia.com/terms/a/adx.asp">https://www.investopedia.com/terms/a/adx.asp</a>
  */
-public class MinusDIIndicator extends CachedIndicator<Num> {
+public class MinusDIIndicator extends CachedIndicator<Num>
+{
+	private final int barCount;
 
-    private final int barCount;
-    private final ATRIndicator atrIndicator;
-    private final MMAIndicator avgMinusDMIndicator;
+	private final ATRIndicator atrIndicator;
 
-    /**
-     * Constructor.
-     * 
-     * @param series   the bar series
-     * @param barCount the bar count for {@link #atrIndicator} and
-     *                 {@link #avgMinusDMIndicator}
-     */
-    public MinusDIIndicator(BarSeries series, int barCount) {
-        super(series);
-        this.barCount = barCount;
-        this.atrIndicator = new ATRIndicator(series, barCount);
-        this.avgMinusDMIndicator = new MMAIndicator(new MinusDMIndicator(series), barCount);
-    }
+	private final MMAIndicator avgMinusDMIndicator;
 
-    @Override
-    protected Num calculate(int index) {
-        return avgMinusDMIndicator.getValue(index).dividedBy(atrIndicator.getValue(index)).multipliedBy(hundred());
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series   the bar series
+	 * @param barCount the bar count for {@link #atrIndicator} and
+	 *                 {@link #avgMinusDMIndicator}
+	 */
+	public MinusDIIndicator(BarSeries series, int barCount)
+	{
+		super( series );
+		this.barCount = barCount;
+		this.atrIndicator = new ATRIndicator( series, barCount );
+		this.avgMinusDMIndicator = new MMAIndicator( new MinusDMIndicator( series ), barCount );
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		return avgMinusDMIndicator.getValue( index ).dividedBy( atrIndicator.getValue( index ) ).multipliedBy( hundred() );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
 }

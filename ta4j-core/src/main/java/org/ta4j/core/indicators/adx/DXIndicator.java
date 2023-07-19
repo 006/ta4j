@@ -33,43 +33,53 @@ import org.ta4j.core.num.Num;
  * <p>
  * Part of the Directional Movement System.
  */
-public class DXIndicator extends CachedIndicator<Num> {
+public class DXIndicator extends CachedIndicator<Num>
+{
+	private final int barCount;
 
-    private final int barCount;
-    private final PlusDIIndicator plusDIIndicator;
-    private final MinusDIIndicator minusDIIndicator;
+	private final PlusDIIndicator plusDIIndicator;
 
-    /**
-     * Constructor.
-     * 
-     * @param series   the bar series
-     * @param barCount the bar count for {@link #plusDIIndicator} and
-     *                 {@link #minusDIIndicator}
-     */
-    public DXIndicator(BarSeries series, int barCount) {
-        super(series);
-        this.barCount = barCount;
-        this.plusDIIndicator = new PlusDIIndicator(series, barCount);
-        this.minusDIIndicator = new MinusDIIndicator(series, barCount);
-    }
+	private final MinusDIIndicator minusDIIndicator;
 
-    @Override
-    protected Num calculate(int index) {
-        Num pdiValue = plusDIIndicator.getValue(index);
-        Num mdiValue = minusDIIndicator.getValue(index);
-        if (pdiValue.plus(mdiValue).equals(zero())) {
-            return zero();
-        }
-        return pdiValue.minus(mdiValue).abs().dividedBy(pdiValue.plus(mdiValue)).multipliedBy(hundred());
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series   the bar series
+	 * @param barCount the bar count for {@link #plusDIIndicator} and
+	 *                 {@link #minusDIIndicator}
+	 */
+	public DXIndicator(BarSeries series, int barCount)
+	{
+		super( series );
+		this.barCount = barCount;
+		this.plusDIIndicator = new PlusDIIndicator( series, barCount );
+		this.minusDIIndicator = new MinusDIIndicator( series, barCount );
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		Num pdiValue = plusDIIndicator.getValue( index );
+		Num mdiValue = minusDIIndicator.getValue( index );
+		if (pdiValue.plus( mdiValue ).equals( zero() ))
+		{
+			return zero();
+		}
+		return pdiValue.minus( mdiValue ).abs().dividedBy( pdiValue.plus( mdiValue ) ).multipliedBy( hundred() );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
 }

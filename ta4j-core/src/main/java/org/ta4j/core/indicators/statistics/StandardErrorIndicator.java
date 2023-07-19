@@ -30,32 +30,38 @@ import org.ta4j.core.num.Num;
 /**
  * Standard error indicator.
  */
-public class StandardErrorIndicator extends CachedIndicator<Num> {
+public class StandardErrorIndicator extends CachedIndicator<Num>
+{
+	private final int barCount;
 
-    private final int barCount;
-    private final StandardDeviationIndicator sdev;
+	private final StandardDeviationIndicator sdev;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator
-     * @param barCount  the time frame
-     */
-    public StandardErrorIndicator(Indicator<Num> indicator, int barCount) {
-        super(indicator);
-        this.barCount = barCount;
-        this.sdev = new StandardDeviationIndicator(indicator, barCount);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator
+	 * @param barCount  the time frame
+	 */
+	public StandardErrorIndicator(Indicator<Num> indicator, int barCount)
+	{
+		super( indicator );
+		this.barCount = barCount;
+		this.sdev = new StandardDeviationIndicator( indicator, barCount );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        final int startIndex = Math.max(0, index - barCount + 1);
-        final int numberOfObservations = index - startIndex + 1;
-        return sdev.getValue(index).dividedBy(numOf(numberOfObservations).sqrt());
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		final int startIndex = Math.max( 0, index - barCount + 1 );
+		final int numberOfObservations = index - startIndex + 1;
+		return sdev.getValue( index ).dividedBy( numOf( numberOfObservations ).sqrt() );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
 }

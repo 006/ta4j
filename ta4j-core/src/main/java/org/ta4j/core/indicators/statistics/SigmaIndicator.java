@@ -33,41 +33,50 @@ import org.ta4j.core.num.Num;
  *
  * @see http://www.statisticshowto.com/probability-and-statistics/z-score/
  */
-public class SigmaIndicator extends CachedIndicator<Num> {
+public class SigmaIndicator extends CachedIndicator<Num>
+{
+	private final Indicator<Num> ref;
 
-    private final Indicator<Num> ref;
-    private final int barCount;
+	private final int barCount;
 
-    private final SMAIndicator mean;
-    private final StandardDeviationIndicator sd;
+	private final SMAIndicator mean;
 
-    /**
-     * Constructor.
-     *
-     * @param ref      the indicator
-     * @param barCount the time frame
-     */
-    public SigmaIndicator(Indicator<Num> ref, int barCount) {
-        super(ref);
-        this.ref = ref;
-        this.barCount = barCount;
-        this.mean = new SMAIndicator(ref, barCount);
-        this.sd = new StandardDeviationIndicator(ref, barCount);
-    }
+	private final StandardDeviationIndicator sd;
 
-    @Override
-    protected Num calculate(int index) {
-        // z-score = (ref - mean) / sd
-        return (ref.getValue(index).minus(mean.getValue(index))).dividedBy(sd.getValue(index));
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param ref      the indicator
+	 * @param barCount the time frame
+	 */
+	public SigmaIndicator(Indicator<Num> ref, int barCount)
+	{
+		super( ref );
+		this.ref = ref;
+		this.barCount = barCount;
+		this.mean = new SMAIndicator( ref, barCount );
+		this.sd = new StandardDeviationIndicator( ref, barCount );
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		// z-score = (ref - mean) / sd
+		return (ref.getValue( index ).minus( mean.getValue( index ) )).dividedBy( sd.getValue( index ) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
 }

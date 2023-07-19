@@ -37,49 +37,60 @@ import org.ta4j.core.num.Num;
  * @see <a href=
  *      "https://www.investopedia.com/terms/a/adx.asp">https://www.investopedia.com/terms/a/adx.asp</a>
  */
-public class ADXIndicator extends CachedIndicator<Num> {
+public class ADXIndicator extends CachedIndicator<Num>
+{
+	private final int diBarCount;
 
-    private final int diBarCount;
-    private final int adxBarCount;
-    private final MMAIndicator averageDXIndicator;
+	private final int adxBarCount;
 
-    /**
-     * Constructor.
-     * 
-     * @param series      the bar series
-     * @param diBarCount  the bar count for {@link DXIndicator}
-     * @param adxBarCount the bar count for {@link #averageDXIndicator}
-     */
-    public ADXIndicator(BarSeries series, int diBarCount, int adxBarCount) {
-        super(series);
-        this.diBarCount = diBarCount;
-        this.adxBarCount = adxBarCount;
-        this.averageDXIndicator = new MMAIndicator(new DXIndicator(series, diBarCount), adxBarCount);
-    }
+	private final MMAIndicator averageDXIndicator;
 
-    /**
-     * Constructor.
-     * 
-     * @param series   the bar series
-     * @param barCount the bar count for {@link DXIndicator} and
-     *                 {@link #averageDXIndicator}
-     */
-    public ADXIndicator(BarSeries series, int barCount) {
-        this(series, barCount, barCount);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series      the bar series
+	 * @param diBarCount  the bar count for {@link DXIndicator}
+	 * @param adxBarCount the bar count for {@link #averageDXIndicator}
+	 */
+	public ADXIndicator(BarSeries series, int diBarCount, int adxBarCount)
+	{
+		super( series );
+		this.diBarCount = diBarCount;
+		this.adxBarCount = adxBarCount;
+		this.averageDXIndicator = new MMAIndicator( new DXIndicator( series, diBarCount ), adxBarCount );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        return averageDXIndicator.getValue(index);
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return Math.max(diBarCount, adxBarCount);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series   the bar series
+	 * @param barCount the bar count for {@link DXIndicator} and
+	 *                 {@link #averageDXIndicator}
+	 */
+	public ADXIndicator(BarSeries series, int barCount)
+	{
+		this( series, barCount, barCount );
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " diBarCount: " + diBarCount + " adxBarCount: " + adxBarCount;
-    }
+
+	@Override
+	protected Num calculate(int index)
+	{
+		return averageDXIndicator.getValue( index );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return Math.max( diBarCount, adxBarCount );
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " diBarCount: " + diBarCount + " adxBarCount: " + adxBarCount;
+	}
 }

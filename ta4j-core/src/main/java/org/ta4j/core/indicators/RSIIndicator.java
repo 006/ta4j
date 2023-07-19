@@ -29,47 +29,57 @@ import org.ta4j.core.indicators.helpers.LossIndicator;
 import org.ta4j.core.num.Num;
 
 /**
- * Relative strength index indicator.
+ * Relative Strength Index (RSI) indicator.
  *
  * <p>
  * Computed using original Welles Wilder formula.
  */
-public class RSIIndicator extends CachedIndicator<Num> {
+public class RSIIndicator extends CachedIndicator<Num>
+{
+	private final MMAIndicator averageGainIndicator;
 
-    private final MMAIndicator averageGainIndicator;
-    private final MMAIndicator averageLossIndicator;
+	private final MMAIndicator averageLossIndicator;
 
-    /**
-     * Constructor.
-     * 
-     * @param indicator the {@link Indicator}
-     * @param barCount  the time frame
-     */
-    public RSIIndicator(Indicator<Num> indicator, int barCount) {
-        super(indicator);
-        this.averageGainIndicator = new MMAIndicator(new GainIndicator(indicator), barCount);
-        this.averageLossIndicator = new MMAIndicator(new LossIndicator(indicator), barCount);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param indicator the {@link Indicator}
+	 * @param barCount  the time frame
+	 */
+	public RSIIndicator(Indicator<Num> indicator, int barCount)
+	{
+		super( indicator );
+		this.averageGainIndicator = new MMAIndicator( new GainIndicator( indicator ), barCount );
+		this.averageLossIndicator = new MMAIndicator( new LossIndicator( indicator ), barCount );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        // compute relative strength
-        Num averageGain = averageGainIndicator.getValue(index);
-        Num averageLoss = averageLossIndicator.getValue(index);
-        if (averageLoss.isZero()) {
-            if (averageGain.isZero()) {
-                return zero();
-            } else {
-                return hundred();
-            }
-        }
-        Num relativeStrength = averageGain.dividedBy(averageLoss);
-        // compute relative strength index
-        return hundred().minus(hundred().dividedBy(one().plus(relativeStrength)));
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		// compute relative strength
+		Num averageGain = averageGainIndicator.getValue( index );
+		Num averageLoss = averageLossIndicator.getValue( index );
+		if (averageLoss.isZero())
+		{
+			if (averageGain.isZero())
+			{
+				return zero();
+			}
+			else
+			{
+				return hundred();
+			}
+		}
+		Num relativeStrength = averageGain.dividedBy( averageLoss );
+		// compute relative strength index
+		return hundred().minus( hundred().dividedBy( one().plus( relativeStrength ) ) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

@@ -30,29 +30,35 @@ import org.ta4j.core.num.Num;
 /**
  * True range indicator.
  */
-public class TRIndicator extends CachedIndicator<Num> {
+public class TRIndicator extends CachedIndicator<Num>
+{
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public TRIndicator(BarSeries series) {
-        super(series);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public TRIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        Num ts = getBarSeries().getBar(index).getHighPrice().minus(getBarSeries().getBar(index).getLowPrice());
-        Num ys = index == 0 ? zero()
-                : getBarSeries().getBar(index).getHighPrice().minus(getBarSeries().getBar(index - 1).getClosePrice());
-        Num yst = index == 0 ? zero()
-                : getBarSeries().getBar(index - 1).getClosePrice().minus(getBarSeries().getBar(index).getLowPrice());
-        return ts.abs().max(ys.abs()).max(yst.abs());
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		Num ts = getBarSeries().getBar( index ).getHighPrice().minus( getBarSeries().getBar( index ).getLowPrice() );
+		Num ys = index == 0 ? zero()
+				: getBarSeries().getBar( index ).getHighPrice().minus( getBarSeries().getBar( index - 1 ).getClosePrice() );
+		Num yst = index == 0 ? zero()
+				: getBarSeries().getBar( index - 1 ).getClosePrice().minus( getBarSeries().getBar( index ).getLowPrice() );
+		return ts.abs().max( ys.abs() ).max( yst.abs() );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

@@ -34,26 +34,32 @@ import org.ta4j.core.num.Num;
  * PriceVariation = currentBarClosePrice / previousBarClosePrice
  * </pre>
  */
-public class PriceVariationIndicator extends CachedIndicator<Num> {
+public class PriceVariationIndicator extends CachedIndicator<Num>
+{
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public PriceVariationIndicator(BarSeries series) {
-        super(series);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public PriceVariationIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        Num previousBarClosePrice = getBarSeries().getBar(Math.max(0, index - 1)).getClosePrice();
-        Num currentBarClosePrice = getBarSeries().getBar(index).getClosePrice();
-        return currentBarClosePrice.dividedBy(previousBarClosePrice);
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		Num previousBarClosePrice = getBarSeries().getBar( Math.max( 0, index - 1 ) ).getClosePrice();
+		Num currentBarClosePrice = getBarSeries().getBar( index ).getClosePrice();
+		return currentBarClosePrice.dividedBy( previousBarClosePrice );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

@@ -31,30 +31,35 @@ import org.ta4j.core.Indicator;
 /**
  * Abstract {@link Indicator indicator}.
  */
-public abstract class AbstractIndicator<T> implements Indicator<T> {
+public abstract class AbstractIndicator<T> implements Indicator<T>
+{
 
-    /** The logger. */
-    protected final transient Logger log = LoggerFactory.getLogger(getClass());
+	/** The logger. */
+	protected final transient Logger log = LoggerFactory.getLogger( getClass() );
 
-    private final BarSeries series;
+	private final BarSeries series;
 
-    /**
-     * Constructor.
-     *
-     * @param series the bar series
-     */
-    protected AbstractIndicator(BarSeries series) {
-        this.series = series;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param series the bar series
+	 */
+	protected AbstractIndicator(BarSeries series)
+	{
+		this.series = series;
+	}
 
-    @Override
-    public BarSeries getBarSeries() {
-        return series;
-    }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+	@Override
+	public BarSeries getBarSeries()
+	{
+		return series;
+	}
 
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName();
+	}
 }

@@ -36,38 +36,46 @@ import org.ta4j.core.indicators.CachedIndicator;
  * <p>
  * Returns a {@link ZonedDateTime} of (or for) a bar.
  */
-public class DateTimeIndicator extends CachedIndicator<ZonedDateTime> {
+public class DateTimeIndicator extends CachedIndicator<ZonedDateTime>
+{
 
-    private final Function<Bar, ZonedDateTime> action;
+	private final Function<Bar, ZonedDateTime> action;
 
-    /**
-     * Constructor to return {@link Bar#getBeginTime()} of a bar.
-     * 
-     * @param barSeries the bar series
-     */
-    public DateTimeIndicator(BarSeries barSeries) {
-        this(barSeries, Bar::getBeginTime);
-    }
+	/**
+	 * Constructor to return {@link Bar#getBeginTime()} of a bar.
+	 * 
+	 * @param barSeries the bar series
+	 */
+	public DateTimeIndicator(BarSeries barSeries)
+	{
+		this( barSeries, Bar::getBeginTime );
+	}
 
-    /**
-     * Constructor.
-     * 
-     * @param barSeries the bar series
-     * @param action    the action
-     */
-    public DateTimeIndicator(BarSeries barSeries, Function<Bar, ZonedDateTime> action) {
-        super(barSeries);
-        this.action = action;
-    }
 
-    @Override
-    protected ZonedDateTime calculate(int index) {
-        Bar bar = getBarSeries().getBar(index);
-        return this.action.apply(bar);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param barSeries the bar series
+	 * @param action    the action
+	 */
+	public DateTimeIndicator(BarSeries barSeries, Function<Bar, ZonedDateTime> action)
+	{
+		super( barSeries );
+		this.action = action;
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+
+	@Override
+	protected ZonedDateTime calculate(int index)
+	{
+		Bar bar = getBarSeries().getBar( index );
+		return this.action.apply( bar );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

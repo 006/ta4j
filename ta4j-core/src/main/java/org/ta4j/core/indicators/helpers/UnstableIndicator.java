@@ -31,33 +31,41 @@ import org.ta4j.core.num.Num;
 /**
  * Indicator that returns {@link NaN#NaN NaN} in unstable bars.
  */
-public class UnstableIndicator extends CachedIndicator<Num> {
+public class UnstableIndicator extends CachedIndicator<Num>
+{
 
-    private final int unstableBars;
-    private final Indicator<Num> indicator;
+	private final int unstableBars;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator    the indicator
-     * @param unstableBars the number of first bars of the barSeries to be unstable
-     */
-    public UnstableIndicator(Indicator<Num> indicator, int unstableBars) {
-        super(indicator);
-        this.indicator = indicator;
-        this.unstableBars = unstableBars;
-    }
+	private final Indicator<Num> indicator;
 
-    @Override
-    protected Num calculate(int index) {
-        if (index < unstableBars) {
-            return NaN.NaN;
-        }
-        return indicator.getValue(index);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator    the indicator
+	 * @param unstableBars the number of first bars of the barSeries to be unstable
+	 */
+	public UnstableIndicator(Indicator<Num> indicator, int unstableBars)
+	{
+		super( indicator );
+		this.indicator = indicator;
+		this.unstableBars = unstableBars;
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return unstableBars;
-    }
+
+	@Override
+	protected Num calculate(int index)
+	{
+		if (index < unstableBars)
+		{
+			return NaN.NaN;
+		}
+		return indicator.getValue( index );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return unstableBars;
+	}
 }

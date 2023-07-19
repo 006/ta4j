@@ -33,24 +33,30 @@ import org.ta4j.core.num.Num;
  * <p>
  * Returns the open price of a bar.
  */
-public class OpenPriceIndicator extends AbstractIndicator<Num> {
+public class OpenPriceIndicator extends AbstractIndicator<Num>
+{
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public OpenPriceIndicator(BarSeries series) {
-        super(series);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public OpenPriceIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    @Override
-    public Num getValue(int index) {
-        return getBarSeries().getBar(index).getOpenPrice();
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	@Override
+	public Num getValue(int index)
+	{
+		return getBarSeries().getBar( index ).getOpenPrice();
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

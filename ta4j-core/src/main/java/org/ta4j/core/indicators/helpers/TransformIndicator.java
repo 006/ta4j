@@ -40,115 +40,144 @@ import org.ta4j.core.num.Num;
  *          calculations this indicator converts {@link Num DecimalNum} to
  *          {@link Double double}
  */
-public class TransformIndicator extends CachedIndicator<Num> {
+public class TransformIndicator extends CachedIndicator<Num>
+{
 
-    private final Indicator<Num> indicator;
-    private final UnaryOperator<Num> transformationFunction;
+	private final Indicator<Num> indicator;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator      the {@link Indicator}
-     * @param transformation a {@link Function} describing the transformation
-     */
-    public TransformIndicator(Indicator<Num> indicator, UnaryOperator<Num> transformation) {
-        super(indicator);
-        this.indicator = indicator;
-        this.transformationFunction = transformation;
-    }
+	private final UnaryOperator<Num> transformationFunction;
 
-    @Override
-    protected Num calculate(int index) {
-        return transformationFunction.apply(indicator.getValue(index));
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator      the {@link Indicator}
+	 * @param transformation a {@link Function} describing the transformation
+	 */
+	public TransformIndicator(Indicator<Num> indicator, UnaryOperator<Num> transformation)
+	{
+		super( indicator );
+		this.indicator = indicator;
+		this.transformationFunction = transformation;
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
 
-    /**
-     * Transforms the input indicator by indicator.plus(coefficient).
-     */
-    public static TransformIndicator plus(Indicator<Num> indicator, Number coefficient) {
-        Num numCoefficient = indicator.numOf(coefficient);
-        return new TransformIndicator(indicator, val -> val.plus(numCoefficient));
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		return transformationFunction.apply( indicator.getValue( index ) );
+	}
 
-    /**
-     * Transforms the input indicator by indicator.minus(coefficient).
-     */
-    public static TransformIndicator minus(Indicator<Num> indicator, Number coefficient) {
-        Num numCoefficient = indicator.numOf(coefficient);
-        return new TransformIndicator(indicator, val -> val.minus(numCoefficient));
-    }
 
-    /**
-     * Transforms the input indicator by indicator.dividedBy(coefficient).
-     */
-    public static TransformIndicator divide(Indicator<Num> indicator, Number coefficient) {
-        Num numCoefficient = indicator.numOf(coefficient);
-        return new TransformIndicator(indicator, val -> val.dividedBy(numCoefficient));
-    }
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 
-    /**
-     * Transforms the input indicator by indicator.multipliedBy(coefficient).
-     */
-    public static TransformIndicator multiply(Indicator<Num> indicator, Number coefficient) {
-        Num numCoefficient = indicator.numOf(coefficient);
-        return new TransformIndicator(indicator, val -> val.multipliedBy(numCoefficient));
-    }
 
-    /**
-     * Transforms the input indicator by indicator.max(coefficient).
-     */
-    public static TransformIndicator max(Indicator<Num> indicator, Number coefficient) {
-        Num numCoefficient = indicator.numOf(coefficient);
-        return new TransformIndicator(indicator, val -> val.max(numCoefficient));
-    }
+	/**
+	 * Transforms the input indicator by indicator.plus(coefficient).
+	 */
+	public static TransformIndicator plus(Indicator<Num> indicator, Number coefficient)
+	{
+		Num numCoefficient = indicator.numOf( coefficient );
+		return new TransformIndicator( indicator, val -> val.plus( numCoefficient ) );
+	}
 
-    /**
-     * Transforms the input indicator by indicator.min(coefficient).
-     */
-    public static TransformIndicator min(Indicator<Num> indicator, Number coefficient) {
-        Num numCoefficient = indicator.numOf(coefficient);
-        return new TransformIndicator(indicator, val -> val.min(numCoefficient));
-    }
 
-    /**
-     * Transforms the input indicator by indicator.abs().
-     */
-    public static TransformIndicator abs(Indicator<Num> indicator) {
-        return new TransformIndicator(indicator, Num::abs);
-    }
+	/**
+	 * Transforms the input indicator by indicator.minus(coefficient).
+	 */
+	public static TransformIndicator minus(Indicator<Num> indicator, Number coefficient)
+	{
+		Num numCoefficient = indicator.numOf( coefficient );
+		return new TransformIndicator( indicator, val -> val.minus( numCoefficient ) );
+	}
 
-    /**
-     * Transforms the input indicator by indicator.pow(coefficient).
-     */
-    public static TransformIndicator pow(Indicator<Num> indicator, Number coefficient) {
-        Num numCoefficient = indicator.numOf(coefficient);
-        return new TransformIndicator(indicator, val -> val.pow(numCoefficient));
-    }
 
-    /**
-     * Transforms the input indicator by indicator.sqrt().
-     */
-    public static TransformIndicator sqrt(Indicator<Num> indicator) {
-        return new TransformIndicator(indicator, Num::sqrt);
-    }
+	/**
+	 * Transforms the input indicator by indicator.dividedBy(coefficient).
+	 */
+	public static TransformIndicator divide(Indicator<Num> indicator, Number coefficient)
+	{
+		Num numCoefficient = indicator.numOf( coefficient );
+		return new TransformIndicator( indicator, val -> val.dividedBy( numCoefficient ) );
+	}
 
-    /**
-     * Transforms the input indicator by indicator.log().
-     *
-     * @apiNote precision may be lost, because this implementation is using the
-     *          underlying doubleValue method
-     */
-    public static TransformIndicator log(Indicator<Num> indicator) {
-        return new TransformIndicator(indicator, val -> val.numOf(Math.log(val.doubleValue())));
-    }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+	/**
+	 * Transforms the input indicator by indicator.multipliedBy(coefficient).
+	 */
+	public static TransformIndicator multiply(Indicator<Num> indicator, Number coefficient)
+	{
+		Num numCoefficient = indicator.numOf( coefficient );
+		return new TransformIndicator( indicator, val -> val.multipliedBy( numCoefficient ) );
+	}
+
+
+	/**
+	 * Transforms the input indicator by indicator.max(coefficient).
+	 */
+	public static TransformIndicator max(Indicator<Num> indicator, Number coefficient)
+	{
+		Num numCoefficient = indicator.numOf( coefficient );
+		return new TransformIndicator( indicator, val -> val.max( numCoefficient ) );
+	}
+
+
+	/**
+	 * Transforms the input indicator by indicator.min(coefficient).
+	 */
+	public static TransformIndicator min(Indicator<Num> indicator, Number coefficient)
+	{
+		Num numCoefficient = indicator.numOf( coefficient );
+		return new TransformIndicator( indicator, val -> val.min( numCoefficient ) );
+	}
+
+
+	/**
+	 * Transforms the input indicator by indicator.abs().
+	 */
+	public static TransformIndicator abs(Indicator<Num> indicator)
+	{
+		return new TransformIndicator( indicator, Num::abs );
+	}
+
+
+	/**
+	 * Transforms the input indicator by indicator.pow(coefficient).
+	 */
+	public static TransformIndicator pow(Indicator<Num> indicator, Number coefficient)
+	{
+		Num numCoefficient = indicator.numOf( coefficient );
+		return new TransformIndicator( indicator, val -> val.pow( numCoefficient ) );
+	}
+
+
+	/**
+	 * Transforms the input indicator by indicator.sqrt().
+	 */
+	public static TransformIndicator sqrt(Indicator<Num> indicator)
+	{
+		return new TransformIndicator( indicator, Num::sqrt );
+	}
+
+
+	/**
+	 * Transforms the input indicator by indicator.log().
+	 *
+	 * @apiNote precision may be lost, because this implementation is using the
+	 *          underlying doubleValue method
+	 */
+	public static TransformIndicator log(Indicator<Num> indicator)
+	{
+		return new TransformIndicator( indicator, val -> val.numOf( Math.log( val.doubleValue() ) ) );
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName();
+	}
 }

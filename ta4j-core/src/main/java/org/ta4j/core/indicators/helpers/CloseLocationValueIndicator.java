@@ -34,33 +34,38 @@ import org.ta4j.core.num.Num;
  * @see <a href="http://www.investopedia.com/terms/c/close_location_value.asp">
  *      http://www.investopedia.com/terms/c/close_location_value.asp</a>
  */
-public class CloseLocationValueIndicator extends CachedIndicator<Num> {
+public class CloseLocationValueIndicator extends CachedIndicator<Num>
+{
+	private final Num zero = numOf( 0 );
 
-    private final Num zero = numOf(0);
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public CloseLocationValueIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public CloseLocationValueIndicator(BarSeries series) {
-        super(series);
-    }
 
-    @Override
-    protected Num calculate(int index) {
-        final Bar bar = getBarSeries().getBar(index);
-        final Num low = bar.getLowPrice();
-        final Num high = bar.getHighPrice();
-        final Num close = bar.getClosePrice();
+	@Override
+	protected Num calculate(int index)
+	{
+		final Bar bar = getBarSeries().getBar( index );
+		final Num low = bar.getLowPrice();
+		final Num high = bar.getHighPrice();
+		final Num close = bar.getClosePrice();
 
-        final Num diffHighLow = high.minus(low);
+		final Num diffHighLow = high.minus( low );
 
-        return diffHighLow.isNaN() ? zero : ((close.minus(low)).minus(high.minus(close))).dividedBy(diffHighLow);
-    }
+		return diffHighLow.isNaN() ? zero : ((close.minus( low )).minus( high.minus( close ) )).dividedBy( diffHighLow );
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

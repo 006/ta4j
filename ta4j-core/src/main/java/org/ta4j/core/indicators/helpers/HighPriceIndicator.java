@@ -33,24 +33,30 @@ import org.ta4j.core.num.Num;
  * <p>
  * Returns the high price of a bar.
  */
-public class HighPriceIndicator extends AbstractIndicator<Num> {
+public class HighPriceIndicator extends AbstractIndicator<Num>
+{
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public HighPriceIndicator(BarSeries series) {
-        super(series);
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public HighPriceIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    @Override
-    public Num getValue(int index) {
-        return getBarSeries().getBar(index).getHighPrice();
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	@Override
+	public Num getValue(int index)
+	{
+		return getBarSeries().getBar( index ).getHighPrice();
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

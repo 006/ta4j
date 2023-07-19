@@ -41,100 +41,119 @@ import org.ta4j.core.num.Num;
  * 
  * @see http://introcs.cs.princeton.edu/java/97data/LinearRegression.java.html
  */
-public class SimpleLinearRegressionIndicator extends CachedIndicator<Num> {
+public class SimpleLinearRegressionIndicator extends CachedIndicator<Num>
+{
+	/**
+	 * The type for the outcome of the {@link SimpleLinearRegressionIndicator}.
+	 */
+	public enum SimpleLinearRegressionType
+	{
+		Y, SLOPE, INTERCEPT
+	}
 
-    /**
-     * The type for the outcome of the {@link SimpleLinearRegressionIndicator}.
-     */
-    public enum SimpleLinearRegressionType {
-        Y, SLOPE, INTERCEPT
-    }
+	private final Indicator<Num> indicator;
 
-    private final Indicator<Num> indicator;
-    private final int barCount;
-    private Num slope;
-    private Num intercept;
-    private final SimpleLinearRegressionType type;
+	private final int barCount;
 
-    /**
-     * Constructor for the y-values of the formula (y = slope * x + intercept).
-     *
-     * @param indicator the indicator for the x-values of the formula.
-     * @param barCount  the time frame
-     */
-    public SimpleLinearRegressionIndicator(Indicator<Num> indicator, int barCount) {
-        this(indicator, barCount, SimpleLinearRegressionType.Y);
-    }
+	private Num slope;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator for the x-values of the formula.
-     * @param barCount  the time frame
-     * @param type      the type of the outcome value (y, slope, intercept)
-     */
-    public SimpleLinearRegressionIndicator(Indicator<Num> indicator, int barCount, SimpleLinearRegressionType type) {
-        super(indicator);
-        this.indicator = indicator;
-        this.barCount = barCount;
-        this.type = type;
-    }
+	private Num intercept;
 
-    @Override
-    protected Num calculate(int index) {
-        final int startIndex = Math.max(0, index - barCount + 1);
-        if (index - startIndex + 1 < 2) {
-            // Not enough observations to compute a regression line
-            return NaN;
-        }
-        calculateRegressionLine(startIndex, index);
+	private final SimpleLinearRegressionType type;
 
-        if (type == SimpleLinearRegressionType.SLOPE) {
-            return slope;
-        }
+	/**
+	 * Constructor for the y-values of the formula (y = slope * x + intercept).
+	 *
+	 * @param indicator the indicator for the x-values of the formula.
+	 * @param barCount  the time frame
+	 */
+	public SimpleLinearRegressionIndicator(Indicator<Num> indicator, int barCount)
+	{
+		this( indicator, barCount, SimpleLinearRegressionType.Y );
+	}
 
-        if (type == SimpleLinearRegressionType.INTERCEPT) {
-            return intercept;
-        }
 
-        return slope.multipliedBy(numOf(index)).plus(intercept);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator for the x-values of the formula.
+	 * @param barCount  the time frame
+	 * @param type      the type of the outcome value (y, slope, intercept)
+	 */
+	public SimpleLinearRegressionIndicator(Indicator<Num> indicator, int barCount, SimpleLinearRegressionType type)
+	{
+		super( indicator );
+		this.indicator = indicator;
+		this.barCount = barCount;
+		this.type = type;
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
 
-    /**
-     * Calculates the regression line.
-     *
-     * @param startIndex the start index (inclusive) in the bar series
-     * @param endIndex   the end index (inclusive) in the bar series
-     */
-    private void calculateRegressionLine(int startIndex, int endIndex) {
-        Num zero = zero();
-        // First pass: compute xBar and yBar
-        Num sumX = zero;
-        Num sumY = zero;
-        for (int i = startIndex; i <= endIndex; i++) {
-            sumX = sumX.plus(numOf(i));
-            sumY = sumY.plus(indicator.getValue(i));
-        }
-        Num nbObservations = numOf(endIndex - startIndex + 1);
-        Num xBar = sumX.dividedBy(nbObservations);
-        Num yBar = sumY.dividedBy(nbObservations);
+	@Override
+	protected Num calculate(int index)
+	{
+		final int startIndex = Math.max( 0, index - barCount + 1 );
+		if (index - startIndex + 1 < 2)
+		{
+			// Not enough observations to compute a regression line
+			return NaN;
+		}
+		calculateRegressionLine( startIndex, index );
 
-        // Second pass: compute slope and intercept
-        Num xxBar = zero;
-        Num xyBar = zero;
-        for (int i = startIndex; i <= endIndex; i++) {
-            Num dX = numOf(i).minus(xBar);
-            Num dY = indicator.getValue(i).minus(yBar);
-            xxBar = xxBar.plus(dX.multipliedBy(dX));
-            xyBar = xyBar.plus(dX.multipliedBy(dY));
-        }
+		if (type == SimpleLinearRegressionType.SLOPE)
+		{
+			return slope;
+		}
 
-        slope = xyBar.dividedBy(xxBar);
-        intercept = yBar.minus(slope.multipliedBy(xBar));
-    }
+		if (type == SimpleLinearRegressionType.INTERCEPT)
+		{
+			return intercept;
+		}
+
+		return slope.multipliedBy( numOf( index ) ).plus( intercept );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	/**
+	 * Calculates the regression line.
+	 *
+	 * @param startIndex the start index (inclusive) in the bar series
+	 * @param endIndex   the end index (inclusive) in the bar series
+	 */
+	private void calculateRegressionLine(int startIndex, int endIndex)
+	{
+		Num zero = zero();
+		// First pass: compute xBar and yBar
+		Num sumX = zero;
+		Num sumY = zero;
+		for ( int i = startIndex; i <= endIndex; i++ )
+		{
+			sumX = sumX.plus( numOf( i ) );
+			sumY = sumY.plus( indicator.getValue( i ) );
+		}
+		Num nbObservations = numOf( endIndex - startIndex + 1 );
+		Num xBar = sumX.dividedBy( nbObservations );
+		Num yBar = sumY.dividedBy( nbObservations );
+
+		// Second pass: compute slope and intercept
+		Num xxBar = zero;
+		Num xyBar = zero;
+		for ( int i = startIndex; i <= endIndex; i++ )
+		{
+			Num dX = numOf( i ).minus( xBar );
+			Num dY = indicator.getValue( i ).minus( yBar );
+			xxBar = xxBar.plus( dX.multipliedBy( dX ) );
+			xyBar = xyBar.plus( dX.multipliedBy( dY ) );
+		}
+
+		slope = xyBar.dividedBy( xxBar );
+		intercept = yBar.minus( slope.multipliedBy( xBar ) );
+	}
 }
