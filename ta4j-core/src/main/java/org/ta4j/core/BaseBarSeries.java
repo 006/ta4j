@@ -444,9 +444,11 @@ public class BaseBarSeries implements BarSeries
 			ZonedDateTime seriesEndTime = bars.get( lastBarIndex ).getEndTime();
 			if (!bar.getEndTime().isAfter( seriesEndTime ))
 			{
-				throw new IllegalArgumentException(
-						String.format( "Cannot add a bar with end time:%s that is <= to series end time: %s", bar.getEndTime(),
-								seriesEndTime ) );
+				// throw new IllegalArgumentException(
+				// String.format( "Cannot add a bar with end time:%s that is <= to series end time: %s",
+				// bar.getEndTime(),
+				// seriesEndTime ) );
+				return;// @_@ Do nothing
 			}
 		}
 
