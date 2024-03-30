@@ -23,14 +23,14 @@
  */
 package org.ta4j.core.indicators.volume;
 
+import static org.ta4j.core.num.NaN.NaN;
+
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.CachedIndicator;
 import org.ta4j.core.indicators.helpers.PreviousValueIndicator;
 import org.ta4j.core.indicators.helpers.TypicalPriceIndicator;
 import org.ta4j.core.indicators.helpers.VolumeIndicator;
 import org.ta4j.core.num.Num;
-
-import static org.ta4j.core.num.NaN.NaN;
 
 /**
  * Money Flow Index (MFI) indicator.
@@ -41,72 +41,87 @@ import static org.ta4j.core.num.NaN.NaN;
  * "https://school.stockcharts.com/doku.php?id=technical_indicators:money_flow_index_mfi"></a>
  * </p>
  */
-public class MoneyFlowIndexIndicator extends CachedIndicator<Num> {
+public class MoneyFlowIndexIndicator extends CachedIndicator<Num>
+{
 
-    private final PreviousValueIndicator previousTypicalPrice;
-    private final TypicalPriceIndicator typicalPrice;
-    private final VolumeIndicator volume;
-    private final int barCount;
+	private final PreviousValueIndicator previousTypicalPrice;
 
-    /**
-     * Constructor.
-     *
-     * @param series   the bar series
-     * @param barCount the time frame
-     */
-    public MoneyFlowIndexIndicator(BarSeries series, int barCount) {
-        super(series);
+	private final TypicalPriceIndicator typicalPrice;
 
-        // Calculating typical price and volume for the series
-        this.typicalPrice = new TypicalPriceIndicator(series);
-        this.previousTypicalPrice = new PreviousValueIndicator(this.typicalPrice);
-        this.volume = new VolumeIndicator(series);
-        this.barCount = barCount;
-    }
+	private final VolumeIndicator volume;
 
-    @Override
-    protected Num calculate(int index) {
-        // Return NaN for unstable bars
-        if (index < this.getUnstableBars()) {
-            return NaN;
-        }
+	private final int barCount;
 
-        Num sumOfPositiveMoneyFlowVolume = zero();
-        Num sumOfNegativeMoneyFlowVolume = zero();
+	/**
+	 * Constructor.
+	 *
+	 * @param series   the bar series
+	 * @param barCount the time frame
+	 */
+	public MoneyFlowIndexIndicator(BarSeries series, int barCount)
+	{
+		super( series );
+		// Calculating typical price and volume for the series
+		this.typicalPrice = new TypicalPriceIndicator( series );
+		this.previousTypicalPrice = new PreviousValueIndicator( this.typicalPrice );
+		this.volume = new VolumeIndicator( series );
+		this.barCount = barCount;
+	}
 
-        // Start from the first bar or the start of the window
-        int startIndex = Math.max(0, index - barCount + 1);
-        for (int i = startIndex; i <= index; i++) {
-            Num currentTypicalPriceValue = typicalPrice.getValue(i);
-            Num previousTypicalPriceValue = previousTypicalPrice.getValue(i);
-            Num currentVolume = volume.getValue(i);
 
-            Num rawMoneyFlowValue = currentTypicalPriceValue.multipliedBy(currentVolume);
+	@Override
+	protected Num calculate(int index)
+	{
+		// Return NaN for unstable bars
+		if (index < this.getUnstableBars())
+		{
+			return NaN;
+		}
 
-            // If the typical price is increasing, we add to the positive flow
-            if (currentTypicalPriceValue.isGreaterThan(previousTypicalPriceValue)) {
-                sumOfPositiveMoneyFlowVolume = sumOfPositiveMoneyFlowVolume.plus(rawMoneyFlowValue);
-            }
-            // If the typical price is decreasing, we add to the negative flow
-            else if (currentTypicalPriceValue.isLessThan(previousTypicalPriceValue)) {
-                sumOfNegativeMoneyFlowVolume = sumOfNegativeMoneyFlowVolume.plus(rawMoneyFlowValue);
-            }
-        }
+		Num sumOfPositiveMoneyFlowVolume = zero();
+		Num sumOfNegativeMoneyFlowVolume = zero();
 
-        // Calculate money flow ratio and index
-        Num moneyFlowRatio = sumOfPositiveMoneyFlowVolume.max(one()).dividedBy(sumOfNegativeMoneyFlowVolume.max(one()));
+		// Start from the first bar or the start of the window
+		int startIndex = Math.max( 0, index - barCount + 1 );
+		for ( int i = startIndex; i <= index; i++ )
+		{
+			Num currentTypicalPriceValue = typicalPrice.getValue( i );
+			Num previousTypicalPriceValue = previousTypicalPrice.getValue( i );
+			Num currentVolume = volume.getValue( i );
 
-        // Calculate MFI. max function is used to prevent division by zero.
-        return hundred().minus((hundred().dividedBy((one().plus(moneyFlowRatio)))));
-    }
+			Num rawMoneyFlowValue = currentTypicalPriceValue.multipliedBy( currentVolume );
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
+			// If the typical price is increasing, we add to the positive flow
+			if (currentTypicalPriceValue.isGreaterThan( previousTypicalPriceValue ))
+			{
+				sumOfPositiveMoneyFlowVolume = sumOfPositiveMoneyFlowVolume.plus( rawMoneyFlowValue );
+			}
+			// If the typical price is decreasing, we add to the negative flow
+			else
+				if (currentTypicalPriceValue.isLessThan( previousTypicalPriceValue ))
+				{
+					sumOfNegativeMoneyFlowVolume = sumOfNegativeMoneyFlowVolume.plus( rawMoneyFlowValue );
+				}
+		}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
+		// Calculate money flow ratio and index
+		Num moneyFlowRatio = sumOfPositiveMoneyFlowVolume.max( one() ).dividedBy( sumOfNegativeMoneyFlowVolume.max( one() ) );
+
+		// Calculate MFI. max function is used to prevent division by zero.
+		return hundred().minus( (hundred().dividedBy( (one().plus( moneyFlowRatio )) )) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
 }

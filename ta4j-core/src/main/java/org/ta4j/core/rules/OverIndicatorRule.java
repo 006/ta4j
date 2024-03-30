@@ -35,50 +35,58 @@ import org.ta4j.core.num.Num;
  * Satisfied when the value of the first {@link Indicator indicator} is strictly
  * greater than the value of the second one.
  */
-public class OverIndicatorRule extends AbstractRule {
+public class OverIndicatorRule extends AbstractRule
+{
 
-    /** The first indicator. */
-    private final Indicator<Num> first;
+	/** The first indicator. */
+	private final Indicator<Num> first;
 
-    /** The second indicator. */
-    private final Indicator<Num> second;
+	/** The second indicator. */
+	private final Indicator<Num> second;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator
-     * @param threshold the threshold
-     */
-    public OverIndicatorRule(Indicator<Num> indicator, Number threshold) {
-        this(indicator, indicator.numOf(threshold));
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator
+	 * @param threshold the threshold
+	 */
+	public OverIndicatorRule(Indicator<Num> indicator, Number threshold)
+	{
+		this( indicator, indicator.numOf( threshold ) );
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator
-     * @param threshold the threshold
-     */
-    public OverIndicatorRule(Indicator<Num> indicator, Num threshold) {
-        this(indicator, new ConstantIndicator<>(indicator.getBarSeries(), threshold));
-    }
 
-    /**
-     * Constructor.
-     *
-     * @param first  the first indicator
-     * @param second the second indicator
-     */
-    public OverIndicatorRule(Indicator<Num> first, Indicator<Num> second) {
-        this.first = first;
-        this.second = second;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator
+	 * @param threshold the threshold
+	 */
+	public OverIndicatorRule(Indicator<Num> indicator, Num threshold)
+	{
+		this( indicator, new ConstantIndicator<>( indicator.getBarSeries(), threshold ) );
+	}
 
-    /** This rule does not use the {@code tradingRecord}. */
-    @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
-        final boolean satisfied = first.getValue(index).isGreaterThan(second.getValue(index));
-        traceIsSatisfied(index, satisfied);
-        return satisfied;
-    }
+
+	/**
+	 * Constructor.
+	 *
+	 * @param first  the first indicator
+	 * @param second the second indicator
+	 */
+	public OverIndicatorRule(Indicator<Num> first, Indicator<Num> second)
+	{
+		this.first = first;
+		this.second = second;
+	}
+
+
+	/** This rule does not use the {@code tradingRecord}. */
+	@Override
+	public boolean isSatisfied(int index, TradingRecord tradingRecord)
+	{
+		final boolean satisfied = first.getValue( index ).isGreaterThan( second.getValue( index ) );
+		traceIsSatisfied( index, satisfied );
+		return satisfied;
+	}
 }

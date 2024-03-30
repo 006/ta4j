@@ -47,251 +47,250 @@ import org.ta4j.core.num.DoubleNum;
 import org.ta4j.core.num.NaN;
 import org.ta4j.core.num.Num;
 
-public class BarSeriesUtilsTest extends AbstractIndicatorTest<BarSeries, Num> {
+public class BarSeriesUtilsTest extends AbstractIndicatorTest<BarSeries, Num>
+{
 
-    private BarSeries series;
-    private ZonedDateTime time;
+	private BarSeries series;
 
-    public BarSeriesUtilsTest(Function<Number, Num> numFunction) {
-        super(numFunction);
-    }
+	private ZonedDateTime time;
 
-    /**
-     * Tests if the previous bar is replaced by newBar
-     */
-    @Test
-    public void replaceBarIfChangedTest() {
+	public BarSeriesUtilsTest(Function<Number, Num> numFunction)
+	{
+		super( numFunction );
+	}
 
-        final List<Bar> bars = new ArrayList<>();
-        time = ZonedDateTime.of(2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault());
 
-        final Bar bar0 = new MockBar(time, 1d, 2d, 3d, 4d, 5d, 0d, 7, numFunction);
-        final Bar bar1 = new MockBar(time.plusDays(1), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction);
-        final Bar bar2 = new MockBar(time.plusDays(2), 2d, 2d, 2d, 2d, 2d, 2d, 2, numFunction);
-        final Bar bar3 = new MockBar(time.plusDays(3), 3d, 3d, 3d, 3d, 3d, 3d, 3, numFunction);
-        final Bar bar4 = new MockBar(time.plusDays(4), 3d, 4d, 4d, 5d, 6d, 4d, 4, numFunction);
-        final Bar bar5 = new MockBar(time.plusDays(5), 5d, 5d, 5d, 5d, 5d, 5d, 5, numFunction);
-        final Bar bar6 = new MockBar(time.plusDays(6), 6d, 6d, 6d, 6d, 6d, 6d, 6, numFunction);
+	/**
+	 * Tests if the previous bar is replaced by newBar
+	 */
+	@Test
+	public void replaceBarIfChangedTest()
+	{
 
-        bars.add(bar0);
-        bars.add(bar1);
-        bars.add(bar2);
-        bars.add(bar3);
-        bars.add(bar4);
-        bars.add(bar5);
-        bars.add(bar6);
+		final List<Bar> bars = new ArrayList<>();
+		time = ZonedDateTime.of( 2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault() );
 
-        series = new BaseBarSeriesBuilder().withNumTypeOf(numFunction).withName("Series Name").withBars(bars).build();
+		final Bar bar0 = new MockBar( time, 1d, 2d, 3d, 4d, 5d, 0d, 7, numFunction );
+		final Bar bar1 = new MockBar( time.plusDays( 1 ), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction );
+		final Bar bar2 = new MockBar( time.plusDays( 2 ), 2d, 2d, 2d, 2d, 2d, 2d, 2, numFunction );
+		final Bar bar3 = new MockBar( time.plusDays( 3 ), 3d, 3d, 3d, 3d, 3d, 3d, 3, numFunction );
+		final Bar bar4 = new MockBar( time.plusDays( 4 ), 3d, 4d, 4d, 5d, 6d, 4d, 4, numFunction );
+		final Bar bar5 = new MockBar( time.plusDays( 5 ), 5d, 5d, 5d, 5d, 5d, 5d, 5, numFunction );
+		final Bar bar6 = new MockBar( time.plusDays( 6 ), 6d, 6d, 6d, 6d, 6d, 6d, 6, numFunction );
 
-        final Bar newBar3 = new MockBar(bar3.getEndTime(), 1d, 1d, 1d, 1d, 1d, 1d, 33, numFunction);
-        final Bar newBar5 = new MockBar(bar5.getEndTime(), 1d, 1d, 1d, 1d, 1d, 1d, 55, numFunction);
+		bars.add( bar0 );
+		bars.add( bar1 );
+		bars.add( bar2 );
+		bars.add( bar3 );
+		bars.add( bar4 );
+		bars.add( bar5 );
+		bars.add( bar6 );
 
-        // newBar3 must be replaced with bar3
-        Bar replacedBar3 = BarSeriesUtils.replaceBarIfChanged(series, newBar3);
-        // newBar5 must be replaced with bar5
-        Bar replacedBar5 = BarSeriesUtils.replaceBarIfChanged(series, newBar5);
+		series = new BaseBarSeriesBuilder().withNumTypeOf( numFunction ).withName( "Series Name" ).withBars( bars ).build();
 
-        // the replaced bar must be the same as the previous bar
-        assertEquals(bar3, replacedBar3);
-        assertEquals(bar5, replacedBar5);
-        assertNotEquals(bar2, replacedBar3);
-        assertNotEquals(bar6, replacedBar5);
+		final Bar newBar3 = new MockBar( bar3.getEndTime(), 1d, 1d, 1d, 1d, 1d, 1d, 33, numFunction );
+		final Bar newBar5 = new MockBar( bar5.getEndTime(), 1d, 1d, 1d, 1d, 1d, 1d, 55, numFunction );
 
-        // the replaced bar must removed from the series
-        assertNotEquals(series.getBar(3), replacedBar3);
-        assertNotEquals(series.getBar(5), replacedBar5);
+		// newBar3 must be replaced with bar3
+		Bar replacedBar3 = BarSeriesUtils.replaceBarIfChanged( series, newBar3 );
+		// newBar5 must be replaced with bar5
+		Bar replacedBar5 = BarSeriesUtils.replaceBarIfChanged( series, newBar5 );
 
-        // the new bar must be stored in the series
-        assertEquals(series.getBar(3), newBar3);
-        assertEquals(series.getBar(5), newBar5);
+		// the replaced bar must be the same as the previous bar
+		assertEquals( bar3, replacedBar3 );
+		assertEquals( bar5, replacedBar5 );
+		assertNotEquals( bar2, replacedBar3 );
+		assertNotEquals( bar6, replacedBar5 );
 
-        // no bar was added
-        assertEquals(7, series.getBarData().size());
-        assertEquals(7, series.getBarCount());
-    }
+		// the replaced bar must removed from the series
+		assertNotEquals( series.getBar( 3 ), replacedBar3 );
+		assertNotEquals( series.getBar( 5 ), replacedBar5 );
 
-    @Test
-    public void findMissingBarsTest() {
+		// the new bar must be stored in the series
+		assertEquals( series.getBar( 3 ), newBar3 );
+		assertEquals( series.getBar( 5 ), newBar5 );
 
-        final List<Bar> bars = new ArrayList<>();
-        time = ZonedDateTime.of(2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault());
+		// no bar was added
+		assertEquals( 7, series.getBarData().size() );
+		assertEquals( 7, series.getBarCount() );
+	}
 
-        final Bar bar0 = new MockBar(time, 1d, 2d, 3d, 4d, 5d, 0d, 7, numFunction);
-        final Bar bar1 = new MockBar(time.plusDays(1), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction);
-        final Bar bar4 = new MockBar(time.plusDays(4), 3d, 4d, 4d, 5d, 6d, 4d, 4, numFunction);
-        final Bar bar5 = new MockBar(time.plusDays(5), 5d, 5d, 5d, 5d, 5d, 5d, 5, numFunction);
-        final Bar bar7 = new MockBar(time.plusDays(7), 0, 0, 0, 0, 0, 0, 0, numFunction);
-        Bar bar8 = BaseBar.builder(DoubleNum::valueOf, Double.class)
-                .timePeriod(Duration.ofDays(1))
-                .endTime(time.plusDays(8))
-                .openPrice(NaN.NaN)
-                .highPrice(NaN.NaN)
-                .lowPrice(NaN.NaN)
-                .closePrice(NaN.NaN)
-                .volume(NaN.NaN)
-                .build();
 
-        bars.add(bar0);
-        bars.add(bar1);
-        bars.add(bar4);
-        bars.add(bar5);
-        bars.add(bar7);
-        bars.add(bar8);
+	@Test
+	public void findMissingBarsTest()
+	{
 
-        series = new BaseBarSeriesBuilder().withNumTypeOf(numFunction).withName("Series Name").withBars(bars).build();
+		final List<Bar> bars = new ArrayList<>();
+		time = ZonedDateTime.of( 2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault() );
 
-        // return the beginTime of each missing bar
-        List<ZonedDateTime> missingBars = BarSeriesUtils.findMissingBars(series, false);
+		final Bar bar0 = new MockBar( time, 1d, 2d, 3d, 4d, 5d, 0d, 7, numFunction );
+		final Bar bar1 = new MockBar( time.plusDays( 1 ), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction );
+		final Bar bar4 = new MockBar( time.plusDays( 4 ), 3d, 4d, 4d, 5d, 6d, 4d, 4, numFunction );
+		final Bar bar5 = new MockBar( time.plusDays( 5 ), 5d, 5d, 5d, 5d, 5d, 5d, 5, numFunction );
+		final Bar bar7 = new MockBar( time.plusDays( 7 ), 0, 0, 0, 0, 0, 0, 0, numFunction );
+		Bar bar8 = BaseBar.builder( DoubleNum::valueOf, Double.class ).timePeriod( Duration.ofDays( 1 ) )
+				.endTime( time.plusDays( 8 ) ).openPrice( NaN.NaN ).highPrice( NaN.NaN ).lowPrice( NaN.NaN ).closePrice( NaN.NaN )
+				.volume( NaN.NaN ).build();
 
-        // there must be 3 missing bars (bar2, bar3, bar6)
-        assertEquals(missingBars.get(0), time.plusDays(2));
-        assertEquals(missingBars.get(1), time.plusDays(3));
-        assertEquals(missingBars.get(2), time.plusDays(6));
-        // there must be 1 bar with invalid data (e.g. price, volume)
-        assertEquals(missingBars.get(3), bar8.getEndTime());
-    }
+		bars.add( bar0 );
+		bars.add( bar1 );
+		bars.add( bar4 );
+		bars.add( bar5 );
+		bars.add( bar7 );
+		bars.add( bar8 );
 
-    @Test
-    public void convertBarSeriesTest() {
+		series = new BaseBarSeriesBuilder().withNumTypeOf( numFunction ).withName( "Series Name" ).withBars( bars ).build();
 
-        final Function<Number, Num> decimalNumFunction = DecimalNum::valueOf;
-        final Num decimalNum = DecimalNum.ZERO;
-        final Num doubleNum = DoubleNum.ZERO;
-        final Num nanNum = NaN.NaN;
+		// return the beginTime of each missing bar
+		List<ZonedDateTime> missingBars = BarSeriesUtils.findMissingBars( series, false );
 
-        final List<Bar> bars = new ArrayList<>();
-        time = ZonedDateTime.of(2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault());
-        bars.add(new MockBar(time, 1d, 2d, 3d, 4d, 5d, 0d, 7, decimalNumFunction));
-        bars.add(new MockBar(time.plusDays(1), 1d, 1d, 1d, 1d, 1d, 1d, 1, decimalNumFunction));
-        bars.add(new MockBar(time.plusDays(2), 2d, 2d, 2d, 2d, 2d, 2d, 2, decimalNumFunction));
+		// there must be 3 missing bars (bar2, bar3, bar6)
+		assertEquals( missingBars.get( 0 ), time.plusDays( 2 ) );
+		assertEquals( missingBars.get( 1 ), time.plusDays( 3 ) );
+		assertEquals( missingBars.get( 2 ), time.plusDays( 6 ) );
+		// there must be 1 bar with invalid data (e.g. price, volume)
+		assertEquals( missingBars.get( 3 ), bar8.getEndTime() );
+	}
 
-        final BarSeries decimalBarSeries = new BaseBarSeriesBuilder().withBars(bars)
-                .withMaxBarCount(100)
-                .withNumTypeOf(DecimalNum.class)
-                .withName("useDecimalNum")
-                .build();
 
-        // convert barSeries with DecimalNum to barSeries with DoubleNum
-        final BarSeries decimalToDoubleSeries = BarSeriesUtils.convertBarSeries(decimalBarSeries, doubleNum);
+	@Test
+	public void convertBarSeriesTest()
+	{
 
-        // convert barSeries with DoubleNum to barSeries with DecimalNum
-        final BarSeries doubleToDecimalSeries = BarSeriesUtils.convertBarSeries(decimalToDoubleSeries, decimalNum);
+		final Function<Number, Num> decimalNumFunction = DecimalNum::valueOf;
+		final Num decimalNum = DecimalNum.ZERO;
+		final Num doubleNum = DoubleNum.ZERO;
+		final Num nanNum = NaN.NaN;
 
-        // convert barSeries with DoubleNum to barSeries with NaNNum
-        final BarSeries doubleToNaNSeries = BarSeriesUtils.convertBarSeries(decimalToDoubleSeries, nanNum);
+		final List<Bar> bars = new ArrayList<>();
+		time = ZonedDateTime.of( 2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault() );
+		bars.add( new MockBar( time, 1d, 2d, 3d, 4d, 5d, 0d, 7, decimalNumFunction ) );
+		bars.add( new MockBar( time.plusDays( 1 ), 1d, 1d, 1d, 1d, 1d, 1d, 1, decimalNumFunction ) );
+		bars.add( new MockBar( time.plusDays( 2 ), 2d, 2d, 2d, 2d, 2d, 2d, 2, decimalNumFunction ) );
 
-        assertEquals(decimalBarSeries.getFirstBar().getClosePrice().getClass(), DecimalNum.class);
-        assertEquals(decimalToDoubleSeries.getFirstBar().getClosePrice().getClass(), DoubleNum.class);
-        assertEquals(doubleToDecimalSeries.getFirstBar().getClosePrice().getClass(), DecimalNum.class);
-        assertEquals(doubleToNaNSeries.getFirstBar().getClosePrice().getClass(), NaN.class);
-    }
+		final BarSeries decimalBarSeries = new BaseBarSeriesBuilder().withBars( bars ).withMaxBarCount( 100 )
+				.withNumTypeOf( DecimalNum.class ).withName( "useDecimalNum" ).build();
 
-    @Test
-    public void findOverlappingBarsTest() {
+		// convert barSeries with DecimalNum to barSeries with DoubleNum
+		final BarSeries decimalToDoubleSeries = BarSeriesUtils.convertBarSeries( decimalBarSeries, doubleNum );
 
-        final List<Bar> bars = new ArrayList<>();
-        time = ZonedDateTime.of(2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault());
+		// convert barSeries with DoubleNum to barSeries with DecimalNum
+		final BarSeries doubleToDecimalSeries = BarSeriesUtils.convertBarSeries( decimalToDoubleSeries, decimalNum );
 
-        final Bar bar0 = new MockBar(time, 1d, 2d, 3d, 4d, 5d, 0d, 7, numFunction);
-        final Bar bar1 = new MockBar(time, 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction);
-        Bar bar8 = BaseBar.builder(DoubleNum::valueOf, Double.class)
-                .timePeriod(Duration.ofDays(1))
-                .endTime(time.plusDays(8))
-                .openPrice(NaN.NaN)
-                .highPrice(NaN.NaN)
-                .lowPrice(NaN.NaN)
-                .closePrice(NaN.NaN)
-                .volume(NaN.NaN)
-                .build();
+		// convert barSeries with DoubleNum to barSeries with NaNNum
+		final BarSeries doubleToNaNSeries = BarSeriesUtils.convertBarSeries( decimalToDoubleSeries, nanNum );
 
-        bars.add(bar0);
-        bars.add(bar1);
-        bars.add(bar8);
+		assertEquals( decimalBarSeries.getFirstBar().getClosePrice().getClass(), DecimalNum.class );
+		assertEquals( decimalToDoubleSeries.getFirstBar().getClosePrice().getClass(), DoubleNum.class );
+		assertEquals( doubleToDecimalSeries.getFirstBar().getClosePrice().getClass(), DecimalNum.class );
+		assertEquals( doubleToNaNSeries.getFirstBar().getClosePrice().getClass(), NaN.class );
+	}
 
-        series = new BaseBarSeriesBuilder().withNumTypeOf(numFunction).withName("Series Name").withBars(bars).build();
-        List<Bar> overlappingBars = BarSeriesUtils.findOverlappingBars(series);
 
-        // there must be 1 overlapping bars (bar1)
-        assertEquals(overlappingBars.get(0).getBeginTime(), bar1.getBeginTime());
-    }
+	@Test
+	public void findOverlappingBarsTest()
+	{
 
-    @Test
-    public void addBars() {
-        BarSeries barSeries = new BaseBarSeries("1day", numFunction.apply(0));
+		final List<Bar> bars = new ArrayList<>();
+		time = ZonedDateTime.of( 2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault() );
 
-        List<Bar> bars = new ArrayList<>();
-        time = ZonedDateTime.of(2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault());
-        final Bar bar0 = new MockBar(time, 1d, 2d, 3d, 4d, 5d, 0d, 7, numFunction);
-        final Bar bar1 = new MockBar(time.plusDays(1), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction);
-        final Bar bar2 = new MockBar(time.plusDays(2), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction);
-        bars.add(bar2);
-        bars.add(bar0);
-        bars.add(bar1);
+		final Bar bar0 = new MockBar( time, 1d, 2d, 3d, 4d, 5d, 0d, 7, numFunction );
+		final Bar bar1 = new MockBar( time, 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction );
+		Bar bar8 = BaseBar.builder( DoubleNum::valueOf, Double.class ).timePeriod( Duration.ofDays( 1 ) )
+				.endTime( time.plusDays( 8 ) ).openPrice( NaN.NaN ).highPrice( NaN.NaN ).lowPrice( NaN.NaN ).closePrice( NaN.NaN )
+				.volume( NaN.NaN ).build();
 
-        // add 3 bars to empty barSeries
-        BarSeriesUtils.addBars(barSeries, bars);
+		bars.add( bar0 );
+		bars.add( bar1 );
+		bars.add( bar8 );
 
-        assertEquals(bar0.getEndTime(), barSeries.getFirstBar().getEndTime());
-        assertEquals(bar2.getEndTime(), barSeries.getLastBar().getEndTime());
+		series = new BaseBarSeriesBuilder().withNumTypeOf( numFunction ).withName( "Series Name" ).withBars( bars ).build();
+		List<Bar> overlappingBars = BarSeriesUtils.findOverlappingBars( series );
 
-        final Bar bar3 = new MockBar(time.plusDays(3), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction);
-        bars.add(bar3);
+		// there must be 1 overlapping bars (bar1)
+		assertEquals( overlappingBars.get( 0 ).getBeginTime(), bar1.getBeginTime() );
+	}
 
-        // add 1 bar to non empty barSeries
-        BarSeriesUtils.addBars(barSeries, bars);
-        assertEquals(bar3.getEndTime(), barSeries.getLastBar().getEndTime());
-    }
 
-    @Test
-    public void sortBars() {
-        time = ZonedDateTime.of(2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault());
+	@Test
+	public void addBars()
+	{
+		BarSeries barSeries = new BaseBarSeries( "1day", numFunction.apply( 0 ) );
+		List<Bar> bars = new ArrayList<>();
+		time = ZonedDateTime.of( 2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault() );
+		final Bar bar0 = new MockBar( time, 1d, 2d, 3d, 4d, 5d, 0d, 7, numFunction );
+		final Bar bar1 = new MockBar( time.plusDays( 1 ), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction );
+		final Bar bar2 = new MockBar( time.plusDays( 2 ), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction );
+		bars.add( bar2 );
+		bars.add( bar0 );
+		bars.add( bar1 );
 
-        final Bar bar0 = new MockBar(time, 1d, 2d, 3d, 4d, 5d, 0d, 7, numFunction);
-        final Bar bar1 = new MockBar(time.plusDays(1), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction);
-        final Bar bar2 = new MockBar(time.plusDays(2), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction);
-        final Bar bar3 = new MockBar(time.plusDays(3), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction);
+		// add 3 bars to empty barSeries
+		BarSeriesUtils.addBars( barSeries, bars );
 
-        final List<Bar> sortedBars = new ArrayList<>();
-        sortedBars.add(bar0);
-        sortedBars.add(bar1);
-        sortedBars.add(bar2);
-        sortedBars.add(bar3);
+		assertEquals( bar0.getEndTime(), barSeries.getFirstBar().getEndTime() );
+		assertEquals( bar2.getEndTime(), barSeries.getLastBar().getEndTime() );
 
-        BarSeriesUtils.sortBars(sortedBars);
-        assertEquals(bar0.getEndTime(), sortedBars.get(0).getEndTime());
-        assertEquals(bar1.getEndTime(), sortedBars.get(1).getEndTime());
-        assertEquals(bar2.getEndTime(), sortedBars.get(2).getEndTime());
-        assertEquals(bar3.getEndTime(), sortedBars.get(3).getEndTime());
+		final Bar bar3 = new MockBar( time.plusDays( 3 ), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction );
+		bars.add( bar3 );
 
-        final List<Bar> unsortedBars = new ArrayList<>();
-        unsortedBars.add(bar3);
-        unsortedBars.add(bar2);
-        unsortedBars.add(bar1);
-        unsortedBars.add(bar0);
+		// add 1 bar to non empty barSeries
+		BarSeriesUtils.addBars( barSeries, bars );
+		assertEquals( bar3.getEndTime(), barSeries.getLastBar().getEndTime() );
+	}
 
-        BarSeriesUtils.sortBars(unsortedBars);
-        assertEquals(bar0.getEndTime(), unsortedBars.get(0).getEndTime());
-        assertEquals(bar1.getEndTime(), unsortedBars.get(1).getEndTime());
-        assertEquals(bar2.getEndTime(), unsortedBars.get(2).getEndTime());
-        assertEquals(bar3.getEndTime(), unsortedBars.get(3).getEndTime());
 
-        final List<Bar> unsortedBars2 = new ArrayList<>();
-        unsortedBars2.add(bar2);
-        unsortedBars2.add(bar1);
-        unsortedBars2.add(bar3);
-        unsortedBars2.add(bar0);
+	@Test
+	public void sortBars()
+	{
+		time = ZonedDateTime.of( 2019, 6, 1, 1, 1, 0, 0, ZoneId.systemDefault() );
 
-        BarSeriesUtils.sortBars(unsortedBars2);
-        assertEquals(bar0.getEndTime(), unsortedBars2.get(0).getEndTime());
-        assertEquals(bar1.getEndTime(), unsortedBars2.get(1).getEndTime());
-        assertEquals(bar2.getEndTime(), unsortedBars2.get(2).getEndTime());
-        assertEquals(bar3.getEndTime(), unsortedBars2.get(3).getEndTime());
+		final Bar bar0 = new MockBar( time, 1d, 2d, 3d, 4d, 5d, 0d, 7, numFunction );
+		final Bar bar1 = new MockBar( time.plusDays( 1 ), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction );
+		final Bar bar2 = new MockBar( time.plusDays( 2 ), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction );
+		final Bar bar3 = new MockBar( time.plusDays( 3 ), 1d, 1d, 1d, 1d, 1d, 1d, 1, numFunction );
 
-        Collections.shuffle(unsortedBars2);
-        BarSeriesUtils.sortBars(unsortedBars2);
-        assertEquals(bar0.getEndTime(), unsortedBars2.get(0).getEndTime());
-        assertEquals(bar1.getEndTime(), unsortedBars2.get(1).getEndTime());
-        assertEquals(bar2.getEndTime(), unsortedBars2.get(2).getEndTime());
-        assertEquals(bar3.getEndTime(), unsortedBars2.get(3).getEndTime());
-    }
+		final List<Bar> sortedBars = new ArrayList<>();
+		sortedBars.add( bar0 );
+		sortedBars.add( bar1 );
+		sortedBars.add( bar2 );
+		sortedBars.add( bar3 );
+
+		BarSeriesUtils.sortBars( sortedBars );
+		assertEquals( bar0.getEndTime(), sortedBars.get( 0 ).getEndTime() );
+		assertEquals( bar1.getEndTime(), sortedBars.get( 1 ).getEndTime() );
+		assertEquals( bar2.getEndTime(), sortedBars.get( 2 ).getEndTime() );
+		assertEquals( bar3.getEndTime(), sortedBars.get( 3 ).getEndTime() );
+
+		final List<Bar> unsortedBars = new ArrayList<>();
+		unsortedBars.add( bar3 );
+		unsortedBars.add( bar2 );
+		unsortedBars.add( bar1 );
+		unsortedBars.add( bar0 );
+
+		BarSeriesUtils.sortBars( unsortedBars );
+		assertEquals( bar0.getEndTime(), unsortedBars.get( 0 ).getEndTime() );
+		assertEquals( bar1.getEndTime(), unsortedBars.get( 1 ).getEndTime() );
+		assertEquals( bar2.getEndTime(), unsortedBars.get( 2 ).getEndTime() );
+		assertEquals( bar3.getEndTime(), unsortedBars.get( 3 ).getEndTime() );
+
+		final List<Bar> unsortedBars2 = new ArrayList<>();
+		unsortedBars2.add( bar2 );
+		unsortedBars2.add( bar1 );
+		unsortedBars2.add( bar3 );
+		unsortedBars2.add( bar0 );
+
+		BarSeriesUtils.sortBars( unsortedBars2 );
+		assertEquals( bar0.getEndTime(), unsortedBars2.get( 0 ).getEndTime() );
+		assertEquals( bar1.getEndTime(), unsortedBars2.get( 1 ).getEndTime() );
+		assertEquals( bar2.getEndTime(), unsortedBars2.get( 2 ).getEndTime() );
+		assertEquals( bar3.getEndTime(), unsortedBars2.get( 3 ).getEndTime() );
+
+		Collections.shuffle( unsortedBars2 );
+		BarSeriesUtils.sortBars( unsortedBars2 );
+		assertEquals( bar0.getEndTime(), unsortedBars2.get( 0 ).getEndTime() );
+		assertEquals( bar1.getEndTime(), unsortedBars2.get( 1 ).getEndTime() );
+		assertEquals( bar2.getEndTime(), unsortedBars2.get( 2 ).getEndTime() );
+		assertEquals( bar3.getEndTime(), unsortedBars2.get( 3 ).getEndTime() );
+	}
 }

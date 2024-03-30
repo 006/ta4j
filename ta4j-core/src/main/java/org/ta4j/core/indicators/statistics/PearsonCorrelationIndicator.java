@@ -36,65 +36,74 @@ import org.ta4j.core.num.Num;
  *      "http://www.statisticshowto.com/probability-and-statistics/correlation-coefficient-formula/">
  *      http://www.statisticshowto.com/probability-and-statistics/correlation-coefficient-formula/</a>
  */
-public class PearsonCorrelationIndicator extends RecursiveCachedIndicator<Num> {
+public class PearsonCorrelationIndicator extends RecursiveCachedIndicator<Num>
+{
+	private final Indicator<Num> indicator1;
 
-    private final Indicator<Num> indicator1;
-    private final Indicator<Num> indicator2;
-    private final int barCount;
+	private final Indicator<Num> indicator2;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator1 the first indicator
-     * @param indicator2 the second indicator
-     * @param barCount   the time frame
-     */
-    public PearsonCorrelationIndicator(Indicator<Num> indicator1, Indicator<Num> indicator2, int barCount) {
-        super(indicator1);
-        this.indicator1 = indicator1;
-        this.indicator2 = indicator2;
-        this.barCount = barCount;
-    }
+	private final int barCount;
 
-    @Override
-    protected Num calculate(int index) {
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator1 the first indicator
+	 * @param indicator2 the second indicator
+	 * @param barCount   the time frame
+	 */
+	public PearsonCorrelationIndicator(Indicator<Num> indicator1, Indicator<Num> indicator2, int barCount)
+	{
+		super( indicator1 );
+		this.indicator1 = indicator1;
+		this.indicator2 = indicator2;
+		this.barCount = barCount;
+	}
 
-        Num n = numOf(barCount);
 
-        Num zero = zero();
-        Num Sx = zero;
-        Num Sy = zero;
-        Num Sxx = zero;
-        Num Syy = zero;
-        Num Sxy = zero;
+	@Override
+	protected Num calculate(int index)
+	{
 
-        for (int i = Math.max(getBarSeries().getBeginIndex(), index - barCount + 1); i <= index; i++) {
+		Num n = numOf( barCount );
 
-            Num x = indicator1.getValue(i);
-            Num y = indicator2.getValue(i);
+		Num zero = zero();
+		Num Sx = zero;
+		Num Sy = zero;
+		Num Sxx = zero;
+		Num Syy = zero;
+		Num Sxy = zero;
 
-            Sx = Sx.plus(x);
-            Sy = Sy.plus(y);
-            Sxy = Sxy.plus(x.multipliedBy(y));
-            Sxx = Sxx.plus(x.multipliedBy(x));
-            Syy = Syy.plus(y.multipliedBy(y));
-        }
+		for ( int i = Math.max( getBarSeries().getBeginIndex(), index - barCount + 1 ); i <= index; i++ )
+		{
 
-        // (n * Sxx - Sx * Sx) * (n * Syy - Sy * Sy)
-        Num toSqrt = (n.multipliedBy(Sxx).minus(Sx.multipliedBy(Sx)))
-                .multipliedBy(n.multipliedBy(Syy).minus(Sy.multipliedBy(Sy)));
+			Num x = indicator1.getValue( i );
+			Num y = indicator2.getValue( i );
 
-        if (toSqrt.isGreaterThan(zero())) {
-            // pearson = (n * Sxy - Sx * Sy) / sqrt((n * Sxx - Sx * Sx) * (n * Syy - Sy *
-            // Sy))
-            return (n.multipliedBy(Sxy).minus(Sx.multipliedBy(Sy))).dividedBy(toSqrt.sqrt());
-        }
+			Sx = Sx.plus( x );
+			Sy = Sy.plus( y );
+			Sxy = Sxy.plus( x.multipliedBy( y ) );
+			Sxx = Sxx.plus( x.multipliedBy( x ) );
+			Syy = Syy.plus( y.multipliedBy( y ) );
+		}
 
-        return NaN;
-    }
+		// (n * Sxx - Sx * Sx) * (n * Syy - Sy * Sy)
+		Num toSqrt = (n.multipliedBy( Sxx ).minus( Sx.multipliedBy( Sx ) ))
+				.multipliedBy( n.multipliedBy( Syy ).minus( Sy.multipliedBy( Sy ) ) );
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
+		if (toSqrt.isGreaterThan( zero() ))
+		{
+			// pearson = (n * Sxy - Sx * Sy) / sqrt((n * Sxx - Sx * Sx) * (n * Syy - Sy *
+			// Sy))
+			return (n.multipliedBy( Sxy ).minus( Sx.multipliedBy( Sy ) )).dividedBy( toSqrt.sqrt() );
+		}
+
+		return NaN;
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
 }

@@ -33,52 +33,60 @@ import org.ta4j.core.num.Num;
 /**
  * The upper band of the SuperTrend indicator.
  */
-public class SuperTrendUpperBandIndicator extends RecursiveCachedIndicator<Num> {
+public class SuperTrendUpperBandIndicator extends RecursiveCachedIndicator<Num>
+{
+	private final ATRIndicator atrIndicator;
 
-    private final ATRIndicator atrIndicator;
-    private final Num multiplier;
-    private final MedianPriceIndicator medianPriceIndicator;
+	private final Num multiplier;
 
-    /**
-     * Constructor with {@code multiplier} = 3.
-     * 
-     * @param barSeries the bar series
-     */
-    public SuperTrendUpperBandIndicator(final BarSeries barSeries) {
-        this(barSeries, new ATRIndicator(barSeries, 10), 3d);
-    }
+	private final MedianPriceIndicator medianPriceIndicator;
 
-    /**
-     * Constructor.
-     * 
-     * @param barSeries    the bar series
-     * @param atrIndicator the {@link #ATRIndicator}
-     * @param multiplier   the multiplier
-     */
-    public SuperTrendUpperBandIndicator(final BarSeries barSeries, final ATRIndicator atrIndicator,
-            final Double multiplier) {
-        super(barSeries);
-        this.atrIndicator = atrIndicator;
-        this.multiplier = numOf(multiplier);
-        this.medianPriceIndicator = new MedianPriceIndicator(barSeries);
-    }
+	/**
+	 * Constructor with {@code multiplier} = 3.
+	 * 
+	 * @param barSeries the bar series
+	 */
+	public SuperTrendUpperBandIndicator(final BarSeries barSeries)
+	{
+		this( barSeries, new ATRIndicator( barSeries, 10 ), 3d );
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        Num currentBasic = medianPriceIndicator.getValue(index)
-                .plus(multiplier.multipliedBy(atrIndicator.getValue(index)));
-        if (index == 0)
-            return currentBasic;
 
-        Bar bar = getBarSeries().getBar(index - 1);
-        Num previousValue = this.getValue(index - 1);
+	/**
+	 * Constructor.
+	 * 
+	 * @param barSeries    the bar series
+	 * @param atrIndicator the {@link #ATRIndicator}
+	 * @param multiplier   the multiplier
+	 */
+	public SuperTrendUpperBandIndicator(final BarSeries barSeries, final ATRIndicator atrIndicator, final Double multiplier)
+	{
+		super( barSeries );
+		this.atrIndicator = atrIndicator;
+		this.multiplier = numOf( multiplier );
+		this.medianPriceIndicator = new MedianPriceIndicator( barSeries );
+	}
 
-        return currentBasic.isLessThan(previousValue) || bar.getClosePrice().isGreaterThan(previousValue) ? currentBasic
-                : previousValue;
-    }
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	@Override
+	protected Num calculate(int index)
+	{
+		Num currentBasic = medianPriceIndicator.getValue( index )
+				.plus( multiplier.multipliedBy( atrIndicator.getValue( index ) ) );
+		if (index == 0)
+			return currentBasic;
+
+		Bar bar = getBarSeries().getBar( index - 1 );
+		Num previousValue = this.getValue( index - 1 );
+
+		return currentBasic.isLessThan( previousValue ) || bar.getClosePrice().isGreaterThan( previousValue ) ? currentBasic
+				: previousValue;
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

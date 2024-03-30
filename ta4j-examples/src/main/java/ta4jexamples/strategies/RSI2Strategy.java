@@ -103,5 +103,4 @@ public class RSI2Strategy
 		// Analysis
 		System.out.println( "Total return for the strategy: " + new ReturnCriterion().calculate( series, tradingRecord ) );
 	}
-
 }

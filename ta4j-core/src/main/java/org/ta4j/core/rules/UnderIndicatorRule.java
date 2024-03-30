@@ -35,50 +35,57 @@ import org.ta4j.core.num.Num;
  * Satisfied when the value of the first {@link Indicator indicator} is strictly
  * less than the value of the second one.
  */
-public class UnderIndicatorRule extends AbstractRule {
+public class UnderIndicatorRule extends AbstractRule
+{
+	/** The first indicator. */
+	private final Indicator<Num> first;
 
-    /** The first indicator. */
-    private final Indicator<Num> first;
+	/** The second indicator. */
+	private final Indicator<Num> second;
 
-    /** The second indicator. */
-    private final Indicator<Num> second;
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator
+	 * @param threshold the threshold
+	 */
+	public UnderIndicatorRule(Indicator<Num> indicator, Number threshold)
+	{
+		this( indicator, new ConstantIndicator<>( indicator.getBarSeries(), indicator.numOf( threshold ) ) );
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator
-     * @param threshold the threshold
-     */
-    public UnderIndicatorRule(Indicator<Num> indicator, Number threshold) {
-        this(indicator, new ConstantIndicator<>(indicator.getBarSeries(), indicator.numOf(threshold)));
-    }
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator
-     * @param threshold the threshold
-     */
-    public UnderIndicatorRule(Indicator<Num> indicator, Num threshold) {
-        this(indicator, new ConstantIndicator<>(indicator.getBarSeries(), threshold));
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator
+	 * @param threshold the threshold
+	 */
+	public UnderIndicatorRule(Indicator<Num> indicator, Num threshold)
+	{
+		this( indicator, new ConstantIndicator<>( indicator.getBarSeries(), threshold ) );
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param first  the first indicator
-     * @param second the second indicator
-     */
-    public UnderIndicatorRule(Indicator<Num> first, Indicator<Num> second) {
-        this.first = first;
-        this.second = second;
-    }
 
-    /** This rule does not use the {@code tradingRecord}. */
-    @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
-        final boolean satisfied = first.getValue(index).isLessThan(second.getValue(index));
-        traceIsSatisfied(index, satisfied);
-        return satisfied;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param first  the first indicator
+	 * @param second the second indicator
+	 */
+	public UnderIndicatorRule(Indicator<Num> first, Indicator<Num> second)
+	{
+		this.first = first;
+		this.second = second;
+	}
+
+
+	/** This rule does not use the {@code tradingRecord}. */
+	@Override
+	public boolean isSatisfied(int index, TradingRecord tradingRecord)
+	{
+		final boolean satisfied = first.getValue( index ).isLessThan( second.getValue( index ) );
+		traceIsSatisfied( index, satisfied );
+		return satisfied;
+	}
 }

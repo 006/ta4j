@@ -34,53 +34,64 @@ import org.ta4j.core.num.Num;
  *
  * There may be other unary operations on Num that could be added here.
  */
-class UnaryOperation implements Indicator<Num> {
+class UnaryOperation implements Indicator<Num>
+{
+	/**
+	 * Returns an {@code Indicator} whose value is {@code √(operand)}.
+	 * 
+	 * @param operand
+	 * @return {@code √(operand)}
+	 * @see Num#sqrt
+	 */
+	public static UnaryOperation sqrt(Indicator<Num> operand)
+	{
+		return new UnaryOperation( Num::sqrt, operand );
+	}
 
-    /**
-     * Returns an {@code Indicator} whose value is {@code √(operand)}.
-     * 
-     * @param operand
-     * @return {@code √(operand)}
-     * @see Num#sqrt
-     */
-    public static UnaryOperation sqrt(Indicator<Num> operand) {
-        return new UnaryOperation(Num::sqrt, operand);
-    }
 
-    /**
-     * Returns an {@code Indicator} whose value is the absolute value of
-     * {@code operand}.
-     * 
-     * @param operand
-     * @return {@code abs(operand)}
-     * @see Num#abs
-     */
-    public static UnaryOperation abs(Indicator<Num> operand) {
-        return new UnaryOperation(Num::abs, operand);
-    }
+	/**
+	 * Returns an {@code Indicator} whose value is the absolute value of
+	 * {@code operand}.
+	 * 
+	 * @param operand
+	 * @return {@code abs(operand)}
+	 * @see Num#abs
+	 */
+	public static UnaryOperation abs(Indicator<Num> operand)
+	{
+		return new UnaryOperation( Num::abs, operand );
+	}
 
-    private final UnaryOperator<Num> operator;
-    private final Indicator<Num> operand;
+	private final UnaryOperator<Num> operator;
 
-    private UnaryOperation(UnaryOperator<Num> operator, Indicator<Num> operand) {
-        this.operator = operator;
-        this.operand = operand;
-    }
+	private final Indicator<Num> operand;
 
-    @Override
-    public Num getValue(int index) {
-        Num n = operand.getValue(index);
-        return operator.apply(n);
-    }
+	private UnaryOperation(UnaryOperator<Num> operator, Indicator<Num> operand)
+	{
+		this.operator = operator;
+		this.operand = operand;
+	}
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
 
-    @Override
-    public BarSeries getBarSeries() {
-        return operand.getBarSeries();
-    }
+	@Override
+	public Num getValue(int index)
+	{
+		Num n = operand.getValue( index );
+		return operator.apply( n );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
+
+
+	@Override
+	public BarSeries getBarSeries()
+	{
+		return operand.getBarSeries();
+	}
 
 }

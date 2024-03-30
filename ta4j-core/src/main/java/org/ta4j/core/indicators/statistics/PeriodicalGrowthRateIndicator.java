@@ -62,85 +62,97 @@ import org.ta4j.core.num.Num;
  * http://www.fool.com/knowledge-center/2015/11/03/annualized-return-vs-cumulative-return.aspx
  * </ul>
  */
-public class PeriodicalGrowthRateIndicator extends CachedIndicator<Num> {
+public class PeriodicalGrowthRateIndicator extends CachedIndicator<Num>
+{
+	private final Indicator<Num> indicator;
 
-    private final Indicator<Num> indicator;
-    private final int barCount;
-    private final Num one;
+	private final int barCount;
 
-    /**
-     * Constructor. Example: use barCount = 251 and "end of day"-bars for annual
-     * behaviour in the US (http://tradingsim.com/blog/trading-days-in-a-year/).
-     *
-     * @param indicator the indicator
-     * @param barCount  the time frame
-     */
-    public PeriodicalGrowthRateIndicator(Indicator<Num> indicator, int barCount) {
-        super(indicator);
-        this.indicator = indicator;
-        this.barCount = barCount;
-        this.one = one();
-    }
+	private final Num one;
 
-    /**
-     * Gets the TotalReturn from the calculated results of the method 'calculate'.
-     * For a barCount = number of trading days within a year (e. g. 251 days in the
-     * US) and "end of day"-bars you will get the 'Annualized Total Return'. Only
-     * complete barCounts are taken into the calculation.
-     *
-     * @return the total return from the calculated results of the method
-     *         'calculate'
-     */
-    public Num getTotalReturn() {
+	/**
+	 * Constructor. Example: use barCount = 251 and "end of day"-bars for annual
+	 * behaviour in the US (http://tradingsim.com/blog/trading-days-in-a-year/).
+	 *
+	 * @param indicator the indicator
+	 * @param barCount  the time frame
+	 */
+	public PeriodicalGrowthRateIndicator(Indicator<Num> indicator, int barCount)
+	{
+		super( indicator );
+		this.indicator = indicator;
+		this.barCount = barCount;
+		this.one = one();
+	}
 
-        Num totalProduct = one;
-        int completeTimeFrames = (getBarSeries().getBarCount() / barCount);
 
-        for (int i = 1; i <= completeTimeFrames; i++) {
-            int index = i * barCount;
-            Num currentReturn = getValue(index);
+	/**
+	 * Gets the TotalReturn from the calculated results of the method 'calculate'.
+	 * For a barCount = number of trading days within a year (e. g. 251 days in the
+	 * US) and "end of day"-bars you will get the 'Annualized Total Return'. Only
+	 * complete barCounts are taken into the calculation.
+	 *
+	 * @return the total return from the calculated results of the method
+	 *         'calculate'
+	 */
+	public Num getTotalReturn()
+	{
 
-            // Skip NaN at the end of a series
-            if (currentReturn != NaN) {
-                currentReturn = currentReturn.plus(one);
-                totalProduct = totalProduct.multipliedBy(currentReturn);
-            }
-        }
+		Num totalProduct = one;
+		int completeTimeFrames = (getBarSeries().getBarCount() / barCount);
 
-        return totalProduct.pow(one.dividedBy(numOf(completeTimeFrames)));
-    }
+		for ( int i = 1; i <= completeTimeFrames; i++ )
+		{
+			int index = i * barCount;
+			Num currentReturn = getValue( index );
 
-    @Override
-    protected Num calculate(int index) {
+			// Skip NaN at the end of a series
+			if (currentReturn != NaN)
+			{
+				currentReturn = currentReturn.plus( one );
+				totalProduct = totalProduct.multipliedBy( currentReturn );
+			}
+		}
 
-        Num currentValue = indicator.getValue(index);
+		return totalProduct.pow( one.dividedBy( numOf( completeTimeFrames ) ) );
+	}
 
-        int helpPartialTimeframe = index % barCount;
-        // TODO: implement Num.floor()
-        Num helpFullTimeframes = numOf(
-                Math.floor(numOf(indicator.getBarSeries().getBarCount()).dividedBy(numOf(barCount)).doubleValue()));
-        Num helpIndexTimeframes = numOf(index).dividedBy(numOf(barCount));
 
-        Num helpPartialTimeframeHeld = numOf(helpPartialTimeframe).dividedBy(numOf(barCount));
-        Num partialTimeframeHeld = (helpPartialTimeframeHeld.isZero()) ? one : helpPartialTimeframeHeld;
+	@Override
+	protected Num calculate(int index)
+	{
 
-        // Avoid calculations of returns:
-        // a.) if index number is below timeframe
-        // e.g. timeframe = 365, index = 5 => no calculation
-        // b.) if at the end of a series incomplete timeframes would remain
-        Num timeframedReturn = NaN;
-        if ((index >= barCount) /* (a) */ && (helpIndexTimeframes.isLessThan(helpFullTimeframes)) /* (b) */) {
-            Num movingValue = indicator.getValue(index - barCount);
-            Num movingSimpleReturn = (currentValue.minus(movingValue)).dividedBy(movingValue);
+		Num currentValue = indicator.getValue( index );
 
-            timeframedReturn = one.plus(movingSimpleReturn).pow(one.dividedBy(partialTimeframeHeld)).minus(one);
-        }
+		int helpPartialTimeframe = index % barCount;
+		// TODO: implement Num.floor()
+		Num helpFullTimeframes = numOf(
+				Math.floor( numOf( indicator.getBarSeries().getBarCount() ).dividedBy( numOf( barCount ) ).doubleValue() ) );
+		Num helpIndexTimeframes = numOf( index ).dividedBy( numOf( barCount ) );
 
-        return timeframedReturn;
-    }
+		Num helpPartialTimeframeHeld = numOf( helpPartialTimeframe ).dividedBy( numOf( barCount ) );
+		Num partialTimeframeHeld = (helpPartialTimeframeHeld.isZero()) ? one : helpPartialTimeframeHeld;
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
+		// Avoid calculations of returns:
+		// a.) if index number is below timeframe
+		// e.g. timeframe = 365, index = 5 => no calculation
+		// b.) if at the end of a series incomplete timeframes would remain
+		Num timeframedReturn = NaN;
+		if ((index >= barCount) /* (a) */ && (helpIndexTimeframes.isLessThan( helpFullTimeframes )) /* (b) */)
+		{
+			Num movingValue = indicator.getValue( index - barCount );
+			Num movingSimpleReturn = (currentValue.minus( movingValue )).dividedBy( movingValue );
+
+			timeframedReturn = one.plus( movingSimpleReturn ).pow( one.dividedBy( partialTimeframeHeld ) ).minus( one );
+		}
+
+		return timeframedReturn;
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
 }
