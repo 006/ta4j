@@ -7,10 +7,35 @@
 		<artifactId>ta4j-parent</artifactId>
 		<version>0.16-SNAPSHOT</version>
 	</parent>
-	<groupId>org.ta4j</groupId>
+	<!-- <groupId>org.ta4j</groupId> -->
 	<artifactId>ta4j-core</artifactId>
 	<name>Ta4j Core</name>
 	<description>ta4j is a Java library providing a simple API for technical analysis.</description>
+	<distributionManagement>
+		<repository>
+			<id>tsst-releases</id>
+			<name>Tsst Internal Releases</name>
+			<url>http://maven.tsst.cc/nexus/content/repositories/tsst-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>tsst-snapshots</id>
+			<name>Tsst Snapshots Repository</name>
+			<url>http://maven.tsst.cc/nexus/content/repositories/tsst-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>tsst-releases</id>
+			<name>Tsst Internal Releases</name>
+			<url>http://maven.tsst.cc/nexus/content/groups/tsst/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
