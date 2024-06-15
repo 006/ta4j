@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ta4j</groupId>
 	<artifactId>ta4j-parent</artifactId>
-	<version>0.16-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<name>Ta4j Parent</name>
 	<description>ta4j is a Java library providing a simple API for technical analysis.</description>
@@ -69,7 +69,7 @@
 		<snapshotRepository>
 			<id>tsst-snapshots</id>
 			<name>Tsst Snapshots Repository</name>
-			<url>http://maven.tsst.cc/nexus/content/repositories/snapshots/</url>
+			<url>http://maven.tsst.cc/nexus/content/repositories/tsst-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 	<pluginRepositories>
@@ -96,7 +96,7 @@
 	</scm>
 	<modules>
 		<module>ta4j-core</module>
-		<module>ta4j-examples</module>
+		<!-- module>ta4j-examples</module -->
 	</modules>
 	<properties>
 		<!-- Encoding -->
