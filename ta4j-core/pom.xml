@@ -44,8 +44,8 @@
 		<test.log.level>INFO</test.log.level>
 		<test.log.pattern>%date %level [%thread%X{DC}] %logger - %msg%n</test.log.pattern>
 		<it.test.log.level>INFO</it.test.log.level>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<!-- Logging facade -->
@@ -102,12 +102,31 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.13.0</version>
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
 					<generatedSourcesDirectory>generated/</generatedSourcesDirectory>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<!-- <plugin> -->
 			<!-- <groupId>org.apache.maven.plugins</groupId> -->
@@ -122,7 +141,7 @@
 			<!-- <plugin> -->
 			<!-- <groupId>biz.aQute.bnd</groupId> -->
 			<!-- <artifactId>bnd-maven-plugin</artifactId> -->
-			<!-- <version>3.3.0</version> -->
+			<!-- <version>5.1.9</version> -->
 			<!-- <executions> -->
 			<!-- <execution> -->
 			<!-- <id>default-bnd-process</id> -->
