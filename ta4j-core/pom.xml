@@ -5,13 +5,46 @@
 	<parent>
 		<groupId>org.ta4j</groupId>
 		<artifactId>ta4j-parent</artifactId>
-		<version>0.16-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 	<!-- <groupId>org.ta4j</groupId> -->
 	<artifactId>ta4j-core</artifactId>
+	<version>0.16-SNAPSHOT</version>
 	<name>Ta4j Core</name>
 	<description>ta4j is a Java library providing a simple API for technical
 		analysis.</description>
+	<repositories>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+			<id>tsst-releases</id>
+			<name>Tsst Internal Releases</name>
+			<url>http://maven.tsst.cc/nexus/content/groups/tsst/</url>
+		</repository>
+		<repository>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+			<id>tsst-snapshots</id>
+			<name>Tsst Snapshots Repository</name>
+			<url>http://maven.tsst.cc/nexus/content/repositories/tsst-snapshots/</url>
+		</repository>
+	</repositories>
 	<distributionManagement>
 		<repository>
 			<id>tsst-releases</id>
@@ -84,12 +117,31 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.13.0</version>
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
 					<generatedSourcesDirectory>generated/</generatedSourcesDirectory>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<!-- <plugin> -->
 			<!-- <groupId>org.apache.maven.plugins</groupId> -->
@@ -105,7 +157,7 @@
 			<!-- <plugin> -->
 			<!-- <groupId>biz.aQute.bnd</groupId> -->
 			<!-- <artifactId>bnd-maven-plugin</artifactId> -->
-			<!-- <version>3.3.0</version> -->
+			<!-- <version>5.1.9</version> -->
 			<!-- <executions> -->
 			<!-- <execution> -->
 			<!-- <id>default-bnd-process</id> -->
