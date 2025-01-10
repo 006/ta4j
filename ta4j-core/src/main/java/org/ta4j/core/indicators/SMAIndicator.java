@@ -78,5 +78,4 @@ public class SMAIndicator extends CachedIndicator<Num>
 	{
 		return getClass().getSimpleName() + " barCount: " + barCount;
 	}
-
 }

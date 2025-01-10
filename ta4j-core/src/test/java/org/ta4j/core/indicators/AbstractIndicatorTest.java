@@ -117,5 +117,4 @@ public abstract class AbstractIndicatorTest<D, I>
 		MathContext mathContext = new MathContext( precision, RoundingMode.HALF_UP );
 		return this.numOf( new BigDecimal( string, mathContext ) );
 	}
-
 }

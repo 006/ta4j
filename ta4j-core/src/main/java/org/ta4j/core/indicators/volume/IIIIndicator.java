@@ -37,45 +37,55 @@ import org.ta4j.core.num.Num;
  * @see <a href=
  *      "https://www.investopedia.com/terms/i/intradayintensityindex.asp">https://www.investopedia.com/terms/i/intradayintensityindex.asp</a>
  */
-public class IIIIndicator extends CachedIndicator<Num> {
+public class IIIIndicator extends CachedIndicator<Num>
+{
 
-    private final ClosePriceIndicator closePriceIndicator;
-    private final HighPriceIndicator highPriceIndicator;
-    private final LowPriceIndicator lowPriceIndicator;
-    private final VolumeIndicator volumeIndicator;
-    private final Num two;
+	private final ClosePriceIndicator closePriceIndicator;
 
-    /**
-     * Constructor.
-     * 
-     * @param series the bar series
-     */
-    public IIIIndicator(BarSeries series) {
-        super(series);
-        this.closePriceIndicator = new ClosePriceIndicator(series);
-        this.highPriceIndicator = new HighPriceIndicator(series);
-        this.lowPriceIndicator = new LowPriceIndicator(series);
-        this.volumeIndicator = new VolumeIndicator(series);
-        this.two = numOf(2);
-    }
+	private final HighPriceIndicator highPriceIndicator;
 
-    @Override
-    protected Num calculate(int index) {
-        if (index == getBarSeries().getBeginIndex()) {
-            return zero();
-        }
-        final Num doubledClosePrice = two.multipliedBy(closePriceIndicator.getValue(index));
-        final Num high = highPriceIndicator.getValue(index);
-        final Num low = lowPriceIndicator.getValue(index);
-        final Num highMinusLow = high.minus(low);
-        final Num highPlusLow = high.plus(low);
+	private final LowPriceIndicator lowPriceIndicator;
 
-        return doubledClosePrice.minus(highPlusLow)
-                .dividedBy(highMinusLow.multipliedBy(volumeIndicator.getValue(index)));
-    }
+	private final VolumeIndicator volumeIndicator;
 
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+	private final Num two;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param series the bar series
+	 */
+	public IIIIndicator(BarSeries series)
+	{
+		super( series );
+		this.closePriceIndicator = new ClosePriceIndicator( series );
+		this.highPriceIndicator = new HighPriceIndicator( series );
+		this.lowPriceIndicator = new LowPriceIndicator( series );
+		this.volumeIndicator = new VolumeIndicator( series );
+		this.two = numOf( 2 );
+	}
+
+
+	@Override
+	protected Num calculate(int index)
+	{
+		if (index == getBarSeries().getBeginIndex())
+		{
+			return zero();
+		}
+		final Num doubledClosePrice = two.multipliedBy( closePriceIndicator.getValue( index ) );
+		final Num high = highPriceIndicator.getValue( index );
+		final Num low = lowPriceIndicator.getValue( index );
+		final Num highMinusLow = high.minus( low );
+		final Num highPlusLow = high.plus( low );
+
+		return doubledClosePrice.minus( highPlusLow ).dividedBy( highMinusLow.multipliedBy( volumeIndicator.getValue( index ) ) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }

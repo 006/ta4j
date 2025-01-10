@@ -69,9 +69,7 @@ public class VolumeIndicator extends CachedIndicator<Num>
 		int startIndex = Math.max( 0, index - barCount + 1 );
 		Num sumOfVolume = zero();
 		for ( int i = startIndex; i <= index; i++ )
-		{
 			sumOfVolume = sumOfVolume.plus( getBarSeries().getBar( i ).getVolume() );
-		}
 		return sumOfVolume;
 	}
 

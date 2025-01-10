@@ -257,7 +257,6 @@ public class BaseBarSeries implements BarSeries
 	@Override
 	public void addBar(Bar bar, boolean replace)
 	{
-
 		Objects.requireNonNull( bar, "bar must not be null" );
 		if (!checkBar( bar ))
 		{
@@ -274,7 +273,10 @@ public class BaseBarSeries implements BarSeries
 				return;
 			}
 			final int lastBarIndex = bars.size() - 1;
-			ZonedDateTime seriesEndTime = bars.get( lastBarIndex ).getEndTime();
+			Bar lastBar = bars.get( lastBarIndex );
+			// if (lastBar == null)
+			// System.err.println( "Bar size: " + bars.size() + ", index=" + lastBarIndex );// XXX
+			ZonedDateTime seriesEndTime = lastBar.getEndTime();
 			if (!bar.getEndTime().isAfter( seriesEndTime ))
 			{
 				// throw new IllegalArgumentException(

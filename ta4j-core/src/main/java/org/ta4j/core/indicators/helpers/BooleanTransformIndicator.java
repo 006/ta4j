@@ -160,7 +160,6 @@ public class BooleanTransformIndicator extends CachedIndicator<Boolean>
 	{
 
 		Num val = indicator.getValue( index );
-
 		if (type != null)
 		{
 			switch (type)
@@ -179,7 +178,6 @@ public class BooleanTransformIndicator extends CachedIndicator<Boolean>
 					break;
 			}
 		}
-
 		else
 			if (simpleType != null)
 			{

@@ -23,6 +23,11 @@
  */
 package org.ta4j.core.indicators.helpers;
 
+import static junit.framework.TestCase.assertEquals;
+import static org.ta4j.core.TestUtils.assertNumEquals;
+
+import java.util.function.Function;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.ta4j.core.BarSeries;
@@ -31,34 +36,36 @@ import org.ta4j.core.indicators.AbstractIndicatorTest;
 import org.ta4j.core.mocks.MockBarSeries;
 import org.ta4j.core.num.Num;
 
-import java.util.function.Function;
+public class ClosePriceDifferenceIndicatorTest extends AbstractIndicatorTest<Indicator<Num>, Num>
+{
 
-import static junit.framework.TestCase.assertEquals;
-import static org.ta4j.core.TestUtils.assertNumEquals;
+	private ClosePriceDifferenceIndicator closePriceDifference;
 
-public class ClosePriceDifferenceIndicatorTest extends AbstractIndicatorTest<Indicator<Num>, Num> {
+	private BarSeries barSeries;
 
-    private ClosePriceDifferenceIndicator closePriceDifference;
+	public ClosePriceDifferenceIndicatorTest(Function<Number, Num> numFunction)
+	{
+		super( numFunction );
+	}
 
-    private BarSeries barSeries;
 
-    public ClosePriceDifferenceIndicatorTest(Function<Number, Num> numFunction) {
-        super(numFunction);
-    }
+	@Before
+	public void setUp()
+	{
+		barSeries = new MockBarSeries( numFunction );
+		closePriceDifference = new ClosePriceDifferenceIndicator( barSeries );
+	}
 
-    @Before
-    public void setUp() {
-        barSeries = new MockBarSeries(numFunction);
-        closePriceDifference = new ClosePriceDifferenceIndicator(barSeries);
-    }
 
-    @Test
-    public void indicatorShouldRetrieveBarDifference() {
-        assertNumEquals(0, closePriceDifference.getValue(0));
-        for (int i = 1; i < 10; i++) {
-            Num previousBarClosePrice = barSeries.getBar(i - 1).getClosePrice();
-            Num currentBarClosePrice = barSeries.getBar(i).getClosePrice();
-            assertEquals(closePriceDifference.getValue(i), currentBarClosePrice.minus(previousBarClosePrice));
-        }
-    }
+	@Test
+	public void indicatorShouldRetrieveBarDifference()
+	{
+		assertNumEquals( 0, closePriceDifference.getValue( 0 ) );
+		for ( int i = 1; i < 10; i++ )
+		{
+			Num previousBarClosePrice = barSeries.getBar( i - 1 ).getClosePrice();
+			Num currentBarClosePrice = barSeries.getBar( i ).getClosePrice();
+			assertEquals( closePriceDifference.getValue( i ), currentBarClosePrice.minus( previousBarClosePrice ) );
+		}
+	}
 }

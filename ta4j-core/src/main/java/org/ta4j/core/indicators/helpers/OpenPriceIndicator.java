@@ -35,7 +35,6 @@ import org.ta4j.core.num.Num;
  */
 public class OpenPriceIndicator extends AbstractIndicator<Num>
 {
-
 	/**
 	 * Constructor.
 	 * 

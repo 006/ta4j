@@ -9,10 +9,9 @@
 	</parent>
 	<!-- <groupId>org.ta4j</groupId> -->
 	<artifactId>ta4j-core</artifactId>
-	<version>0.16-SNAPSHOT</version>
+	<version>0.16-57</version>
 	<name>Ta4j Core</name>
-	<description>ta4j is a Java library providing a simple API for technical
-		analysis.</description>
+	<description>ta4j is a Java library providing a simple API for technical analysis.</description>
 	<repositories>
 		<repository>
 			<releases>

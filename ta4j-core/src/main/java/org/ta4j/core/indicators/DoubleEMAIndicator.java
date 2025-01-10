@@ -33,39 +33,49 @@ import org.ta4j.core.num.Num;
  *      "https://en.wikipedia.org/wiki/Double_exponential_moving_average">
  *      https://en.wikipedia.org/wiki/Double_exponential_moving_average</a>
  */
-public class DoubleEMAIndicator extends CachedIndicator<Num> {
+public class DoubleEMAIndicator extends CachedIndicator<Num>
+{
+	private final Num two;
 
-    private final Num two;
-    private final int barCount;
-    private final EMAIndicator ema;
-    private final EMAIndicator emaEma;
+	private final int barCount;
 
-    /**
-     * Constructor.
-     *
-     * @param indicator the indicator
-     * @param barCount  the time frame
-     */
-    public DoubleEMAIndicator(Indicator<Num> indicator, int barCount) {
-        super(indicator);
-        this.two = numOf(2);
-        this.barCount = barCount;
-        this.ema = new EMAIndicator(indicator, barCount);
-        this.emaEma = new EMAIndicator(ema, barCount);
-    }
+	private final EMAIndicator ema;
 
-    @Override
-    protected Num calculate(int index) {
-        return ema.getValue(index).multipliedBy(two).minus(emaEma.getValue(index));
-    }
+	private final EMAIndicator emaEma;
 
-    @Override
-    public int getUnstableBars() {
-        return barCount;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param indicator the indicator
+	 * @param barCount  the time frame
+	 */
+	public DoubleEMAIndicator(Indicator<Num> indicator, int barCount)
+	{
+		super( indicator );
+		this.two = numOf( 2 );
+		this.barCount = barCount;
+		this.ema = new EMAIndicator( indicator, barCount );
+		this.emaEma = new EMAIndicator( ema, barCount );
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " barCount: " + barCount;
-    }
+
+	@Override
+	protected Num calculate(int index)
+	{
+		return ema.getValue( index ).multipliedBy( two ).minus( emaEma.getValue( index ) );
+	}
+
+
+	@Override
+	public int getUnstableBars()
+	{
+		return barCount;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " barCount: " + barCount;
+	}
 }

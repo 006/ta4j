@@ -94,14 +94,11 @@ public abstract class CachedIndicator<T> extends AbstractIndicator<T>
 			// --> Calculating the value
 			T result = calculate( index );
 			if (log.isTraceEnabled())
-			{
 				log.trace( "{}({}): {}", this, index, result );
-			}
 			return result;
 		}
 
 		// Series is not null
-
 		final int removedBarsCount = series.getRemovedBarsCount();
 		final int maximumResultCount = series.getMaximumBarCount();
 
@@ -157,10 +154,9 @@ public abstract class CachedIndicator<T> extends AbstractIndicator<T>
 			}
 
 		}
+
 		if (log.isTraceEnabled())
-		{
 			log.trace( "{}({}): {}", this, index, result );
-		}
 		return result;
 	}
 

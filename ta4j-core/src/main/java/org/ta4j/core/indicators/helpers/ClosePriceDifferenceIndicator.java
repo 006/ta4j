@@ -31,43 +31,48 @@ import org.ta4j.core.num.Num;
  * Indicator that calculates the difference between the close prices of the
  * current bar and the previous bar.
  */
-public class ClosePriceDifferenceIndicator extends CachedIndicator<Num> {
+public class ClosePriceDifferenceIndicator extends CachedIndicator<Num>
+{
+	/**
+	 * Constructor.
+	 *
+	 * @param series the bar series
+	 */
+	public ClosePriceDifferenceIndicator(BarSeries series)
+	{
+		super( series );
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param series the bar series
-     */
-    public ClosePriceDifferenceIndicator(BarSeries series) {
-        super(series);
-    }
 
-    /**
-     * Calculates the difference between the close prices of the current bar and the
-     * previous bar.
-     *
-     * @param index the index of the current bar
-     * @return the difference between the close prices
-     */
-    @Override
-    protected Num calculate(int index) {
-        // Get the close price of the previous bar
-        Num previousBarClosePrice = getBarSeries().getBar(Math.max(0, index - 1)).getClosePrice();
+	/**
+	 * Calculates the difference between the close prices of the current bar and the
+	 * previous bar.
+	 *
+	 * @param index the index of the current bar
+	 * @return the difference between the close prices
+	 */
+	@Override
+	protected Num calculate(int index)
+	{
+		// Get the close price of the previous bar
+		Num previousBarClosePrice = getBarSeries().getBar( Math.max( 0, index - 1 ) ).getClosePrice();
 
-        // Get the close price of the current bar
-        Num currentBarClosePrice = getBarSeries().getBar(index).getClosePrice();
+		// Get the close price of the current bar
+		Num currentBarClosePrice = getBarSeries().getBar( index ).getClosePrice();
 
-        // Calculate the difference between the close prices
-        return currentBarClosePrice.minus(previousBarClosePrice);
-    }
+		// Calculate the difference between the close prices
+		return currentBarClosePrice.minus( previousBarClosePrice );
+	}
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This indicator is always stable, so it returns 0.
-     */
-    @Override
-    public int getUnstableBars() {
-        return 0;
-    }
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * This indicator is always stable, so it returns 0.
+	 */
+	@Override
+	public int getUnstableBars()
+	{
+		return 0;
+	}
 }
